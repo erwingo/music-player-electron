@@ -11,6 +11,9 @@ export function getAbsPathFromFilesRootPath(newPath: string) {
 }
 
 export function getBgImgUrl(url?: string) {
-  if (typeof url === 'undefined') { return; }
-  return `url('${url}')`;
+  if (typeof url === 'undefined') { return 'none'; }
+
+  // NOTE: encodeURI encodes double quotes but not single quotes that's
+  // why I use double quotes inside the url function
+  return `url("${encodeURI(url)}")`;
 }

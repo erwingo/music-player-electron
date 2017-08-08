@@ -1,3 +1,8 @@
+// TODO: Ideal to cherry pick only what you need, waiting for this tho
+// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/7896
+// import * as shuffle from 'lodash/fp/shuffle';
+
+import * as _ from 'lodash';
 import * as React from 'react';
 import { getAbsPathFromFilesRootPath, getJsonFromFile } from '../_helpers';
 import { getFilesRootPath } from '../_singletons/main';
@@ -8,7 +13,14 @@ import { List, ListItemProps } from './List';
 import { Player } from './Player';
 import { Sidebar } from './Sidebar';
 
-const songs =
+interface NewSong extends types.Song {
+  title: string;
+  desc: string;
+  allCovers: string[];
+  imgUrl?: string;
+}
+
+const allSongs: NewSong[] =
   (getJsonFromFile(getAbsPathFromFilesRootPath('_data/songs.json')) as types.Song[])
     .map(song => {
       const allCovers = [...song.covers, ...song.albumCovers, ...song.artistCovers];
@@ -36,11 +48,10 @@ interface State {
   isPlaying: boolean;
   middleSection: {
     title: string;
-    items: ListItemProps[]
+    items: NewSong[]
   };
   rightSection: {
-    title: string;
-    items: ListItemProps[]
+    items: NewSong[]
   };
   player: {
     title?: string;
@@ -56,7 +67,7 @@ const audioCoreEl = new AudioCore();
 export class App extends React.Component<any, State> {
   constructor() {
     super();
-    this.handleItemDoubleClick = this.handleItemDoubleClick.bind(this);
+    this.handleMiddleSectionItemDblClick = this.handleMiddleSectionItemDblClick.bind(this);
     this.handleDragCompleted = this.handleDragCompleted.bind(this);
     this.handleVolumeChange = this.handleVolumeChange.bind(this);
     this.handlePlayOrPauseClick = this.handlePlayOrPauseClick.bind(this);
@@ -69,7 +80,7 @@ export class App extends React.Component<any, State> {
       isRepeated: false,
       isShuffled: false,
       middleSection: { title: '', items: [] },
-      rightSection: { title: '', items: [] },
+      rightSection: { items: [] },
       player: {}
     };
 
@@ -106,48 +117,89 @@ export class App extends React.Component<any, State> {
     this.setState({ ...this.state, isPlaying: shouldPlay });
   }
 
-  handleItemDoubleClick(item: ListItemProps) {
-    const song = songs.find(el => el.id === item.id)!;
-    const fileUrl = song!.path + '/_file' + song.fileExtension;
-    audioCoreEl.setSrc(getAbsPathFromFilesRootPath(fileUrl));
-    audioCoreEl.play(0);
+  playSongFromPlaylist(songs: NewSong[], songIdx?: number, songId?: string) {
+    let song: NewSong | undefined;
+    if (typeof songIdx === 'number') {
+      song = songs[songIdx];
+    } else if (songId) {
+      song = songs.find(el => el.id === songId);
+    }
+
+    if (song) {
+      const filePath = song.path + '/_file' + song.fileExtension;
+      audioCoreEl.setSrc(getAbsPathFromFilesRootPath(filePath));
+      audioCoreEl.play(0);
+    }
+
+    return song;
+  }
+
+  setPlayingPlaylist(
+    songs: NewSong[],
+    options: {
+      songIdxToPlay?: number,
+      songIdToPlay?: string
+    } = {}
+  ) {
+    let newSongs: NewSong[];
+
+    if (this.state.isShuffled) {
+      newSongs = _.shuffle(songs);
+    } else {
+      newSongs = songs;
+    }
+
+    let player = this.state.player;
+    const songToPlay =
+      this.playSongFromPlaylist(newSongs, options.songIdxToPlay, options.songIdToPlay);
+
+    if (songToPlay) {
+      player = {
+        title: songToPlay.name,
+        subtitle: songToPlay.desc,
+        imgUrl: songToPlay.imgUrl
+      };
+    }
 
     this.setState({
       ...this.state,
-      isPlaying: true,
-      player: {
-        title: song.name,
-        subtitle: song.desc,
-        imgUrl: song.imgUrl
-      }
+      isPlaying: !!songToPlay,
+      rightSection: { items: newSongs },
+      player
     });
   }
 
-  handleSidebarSectItemDblClick() {
-    this.setState({
-      ...this.state,
-      rightSection: {
-        title: 'Playing',
-        items: this.state.middleSection.items
-      }
+  handleMiddleSectionItemDblClick(item: ListItemProps) {
+    const song = allSongs.find(el => el.id === item.id)!;
+    const songs = this.state.middleSection.items
+      .map(el => allSongs.find(el2 => el2.id === el.id)!);
+
+    this.setPlayingPlaylist(songs, {
+      songIdToPlay: song.id
     });
   }
 
-  handleSidebarSectItemClick(sectionId: string, itemId: string) {
-    let newMiddleSection: { title: string; items: ListItemProps[] };
+  handleSidebarSectItemDblClick(section: string, item: string) {
+    if (section === 'library' && item === 'allsongs') {
+      this.setState({
+        ...this.state,
+        middleSection: { title: 'All Songs', items: allSongs }
+      });
+    }
 
-    switch (sectionId) {
-      case 'allsongs':
-        newMiddleSection = {
-          title: 'All Songs',
-          items: songs
-        };
-        break;
-      default:
-        newMiddleSection = {
-          title: 'All Songs',
-          items: songs
-        };
+    this.setPlayingPlaylist(allSongs, { songIdxToPlay: 0 });
+  }
+
+  handleSidebarSectItemClick(section: string, item: string) {
+    let newMiddleSection: { title: string; items: NewSong[] };
+
+    if (section === 'library' && item === 'allsongs') {
+      newMiddleSection = {
+        title: 'All Songs',
+        items: allSongs
+      };
+    } else {
+      newMiddleSection = { title: '-', items: [] };
     }
 
     this.setState({
@@ -198,11 +250,11 @@ export class App extends React.Component<any, State> {
           className='app__middlesection'
           title={this.state.middleSection.title}
           items={this.state.middleSection.items}
-          onItemDoubleClick={this.handleItemDoubleClick}
+          onItemDoubleClick={this.handleMiddleSectionItemDblClick}
         />
         <List
           className='app__rightsection'
-          title={this.state.rightSection.title}
+          title='Playing'
           items={this.state.rightSection.items}
         />
       </div>
