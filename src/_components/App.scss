@@ -1,8 +1,17 @@
 @import '../_settings';
 
 .app {
-  $playerHeight: 101px;
+  $playerHeight: 100px;
   $rightSidebarWidth: 300px;
+  $sidebarWidth: 200px;
+
+  .app__sidebar {
+    position: absolute;
+    top: $playerHeight;
+    left: 0;
+    bottom: 0;
+    width: $sidebarWidth;
+  }
 
   .app__player {
     $container-separation: 20px;
@@ -16,23 +25,29 @@
     max-width: $max-width;
     padding: 0 $container-separation;
     margin: 0 auto;
-    border-bottom: 1px solid $colorBorderSeparator;
   }
 
-  .app__allsongs,
-  .app__playing {
+  .app__sidebar,
+  .app__middlesection,
+  .app__rightsection {
+    border-top: 1px solid $colorBorderSeparator;
+  }
+
+  .app__middlesection,
+  .app__rightsection {
     position: absolute;
     top: $playerHeight;
     bottom: 0;
   }
 
-  .app__allsongs {
-    left: 0;
+  .app__middlesection {
+    left: $sidebarWidth;
     right: $rightSidebarWidth;
+    border-left: 1px solid $colorBorderSeparator;
     border-right: 1px solid $colorBorderSeparator;
   }
 
-  .app__playing {
+  .app__rightsection {
     right: 0;
     width: $rightSidebarWidth;
   }

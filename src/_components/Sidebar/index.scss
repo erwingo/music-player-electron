@@ -1,0 +1,19 @@
+@import '../../_settings';
+
+.sidebar {
+  .sidebar__section {
+    .sidebar__section__title {
+      margin: 0;
+      font-size: 15px;
+      padding: 10px 10px 5px;
+      color: $colorSecondary;
+    }
+
+    .sidebar__section__items {
+      .sidebar__section__items__item {
+        padding: 10px 10px 10px 20px;
+        font-size: 16px;
+      }
+    }
+  }
+}

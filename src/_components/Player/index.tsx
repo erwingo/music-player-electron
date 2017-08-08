@@ -13,34 +13,37 @@ interface Props {
   mediaManager?: MediaManagerProps;
 }
 
-export function Player(props: Props) {
-  return (
-    <div className={classnames('player', props.className)}>
-      <Slider
-        className='player__volume'
-        value={props.volume}
-        step={0.05}
-        minValue={0}
-        maxValue={1}
-        onChange={props.onVolumeChange}
-      />
+export class Player extends React.PureComponent<Props, any> {
+  render() {
 
-      <div className='player__controls'>
-        <div
-          className='player__controls__prevnext icon is-fast-backward'
+    return (
+      <div className={classnames('player', this.props.className)}>
+        <Slider
+          className='player__volume'
+          value={this.props.volume}
+          step={0.05}
+          minValue={0}
+          maxValue={1}
+          onChange={this.props.onVolumeChange}
         />
-        <div
-          onClick={props.onPlayOrPauseClick}
-          className={classnames(
-            'player__controls__playpause icon',
-            props.isPlaying ? 'is-circle-pause' : 'is-circle-play'
-          )}
-        />
-        <div
-          className='player__controls__prevnext icon is-fast-forward'
-        />
+
+        <div className='player__controls'>
+          <div
+            className='player__controls__prevnext icon is-fast-backward'
+          />
+          <div
+            onClick={this.props.onPlayOrPauseClick}
+            className={classnames(
+              'player__controls__playpause icon',
+              this.props.isPlaying ? 'is-circle-pause' : 'is-circle-play'
+            )}
+          />
+          <div
+            className='player__controls__prevnext icon is-fast-forward'
+          />
+        </div>
+        <MediaManager {...this.props.mediaManager} />
       </div>
-      <MediaManager {...props.mediaManager} />
-    </div>
-  );
+    );
+  }
 }

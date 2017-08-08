@@ -6,15 +6,22 @@ import './App.scss';
 import { AudioCore } from './AudioCore';
 import { List, ListItemProps } from './List';
 import { Player } from './Player';
+import { Sidebar } from './Sidebar';
 
 const songs =
   (getJsonFromFile(getAbsPathFromFilesRootPath('_data/songs.json')) as types.Song[])
-    .map(song => ({
-      ...song,
-      title: song.name,
-      desc: song.albumId ? song.artistId + ' - ' + song.albumId : song.artistId,
-      imgUrl: song.covers[0] ? getAbsPathFromFilesRootPath(song.covers[0]) : undefined
-    }));
+    .map(song => {
+      const allCovers = [...song.covers, ...song.albumCovers, ...song.artistCovers];
+      const firstCover = allCovers[0] as (string | undefined);
+
+      return {
+        ...song,
+        title: song.name,
+        desc: song.albumId ? song.artistId + ' - ' + song.albumId : song.artistId,
+        allCovers,
+        imgUrl: firstCover ? getAbsPathFromFilesRootPath(firstCover) : undefined
+      };
+    });
 
 // const artists: types.Artist[] =
 //   getJsonFromFile(getAbsPathFromFilesRootPath('_data/artists.json'));
@@ -27,6 +34,14 @@ interface State {
   isRepeated: boolean;
   isShuffled: boolean;
   isPlaying: boolean;
+  middleSection: {
+    title: string;
+    items: ListItemProps[]
+  };
+  rightSection: {
+    title: string;
+    items: ListItemProps[]
+  };
   player: {
     title?: string;
     subtitle?: string;
@@ -45,12 +60,16 @@ export class App extends React.Component<any, State> {
     this.handleDragCompleted = this.handleDragCompleted.bind(this);
     this.handleVolumeChange = this.handleVolumeChange.bind(this);
     this.handlePlayOrPauseClick = this.handlePlayOrPauseClick.bind(this);
+    this.handleSidebarSectItemClick = this.handleSidebarSectItemClick.bind(this);
+    this.handleSidebarSectItemDblClick = this.handleSidebarSectItemDblClick.bind(this);
 
     this.state = {
       isPlaying: false,
       volume: 1,
       isRepeated: false,
       isShuffled: false,
+      middleSection: { title: '', items: [] },
+      rightSection: { title: '', items: [] },
       player: {}
     };
 
@@ -104,6 +123,39 @@ export class App extends React.Component<any, State> {
     });
   }
 
+  handleSidebarSectItemDblClick() {
+    this.setState({
+      ...this.state,
+      rightSection: {
+        title: 'Playing',
+        items: this.state.middleSection.items
+      }
+    });
+  }
+
+  handleSidebarSectItemClick(sectionId: string, itemId: string) {
+    let newMiddleSection: { title: string; items: ListItemProps[] };
+
+    switch (sectionId) {
+      case 'allsongs':
+        newMiddleSection = {
+          title: 'All Songs',
+          items: songs
+        };
+        break;
+      default:
+        newMiddleSection = {
+          title: 'All Songs',
+          items: songs
+        };
+    }
+
+    this.setState({
+      ...this.state,
+      middleSection: { ...newMiddleSection }
+    });
+  }
+
   render() {
     return (
       <div className='app'>
@@ -130,15 +182,28 @@ export class App extends React.Component<any, State> {
             }
           }}
         />
+        <Sidebar
+          className='app__sidebar'
+          onSectionItemClick={this.handleSidebarSectItemClick}
+          onSectionItemDblClick={this.handleSidebarSectItemDblClick}
+          sections={[
+            {
+              id: 'library',
+              title: 'Library',
+              items: [{ id: 'allsongs', title: 'All Songs' }]
+            }
+          ]}
+        />
         <List
-          className='app__allsongs'
-          title='All Songs'
-          items={songs}
+          className='app__middlesection'
+          title={this.state.middleSection.title}
+          items={this.state.middleSection.items}
           onItemDoubleClick={this.handleItemDoubleClick}
         />
         <List
-          className='app__playing'
-          title='Playing'
+          className='app__rightsection'
+          title={this.state.rightSection.title}
+          items={this.state.rightSection.items}
         />
       </div>
     );

@@ -27,7 +27,7 @@ function convertSecondsToMinutesTime(seconds?: number) {
   return `${minutes}:${(pad + newSeconds).substring(newSeconds.length)}`;
 }
 
-export class MediaManager extends React.Component<Props, any> {
+export class MediaManager extends React.PureComponent<Props, any> {
   render() {
     return (
       <div className='player__mediamanager'>

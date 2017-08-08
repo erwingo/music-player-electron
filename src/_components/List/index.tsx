@@ -14,21 +14,23 @@ interface Props {
   onItemDoubleClick?: (item: ListItemProps) => void;
 }
 
-export function List(props: Props) {
-  const items = props.items || [];
+export class List extends React.PureComponent<Props, any> {
+  render() {
+    const items = this.props.items || [];
 
-  return (
-    <div className={classnames('list', props.className)} style={props.style}>
-      <h1 className='list__title'>{props.title}</h1>
-      <div className='list__items'>
-        {items.map(item =>
-          <ListItem
-            key={item.id}
-            onDoubleClick={props.onItemDoubleClick}
-            {...item}
-          />
-        )}
+    return (
+      <div className={classnames('list', this.props.className)} style={this.props.style}>
+        <h1 className='list__title'>{this.props.title}</h1>
+        <div className='list__items'>
+          {items.map(item =>
+            <ListItem
+              key={item.id}
+              onDoubleClick={this.props.onItemDoubleClick}
+              {...item}
+            />
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
