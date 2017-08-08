@@ -5,6 +5,15 @@
   $rightSidebarWidth: 300px;
   $sidebarWidth: 200px;
 
+  .app__draggablearea {
+    -webkit-app-region: drag;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 22px;
+  }
+
   .app__sidebar {
     position: absolute;
     top: $playerHeight;

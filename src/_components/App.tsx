@@ -272,6 +272,7 @@ export class App extends React.Component<any, State> {
   render() {
     return (
       <div className='app'>
+        <div className='app__draggablearea' />
         <Player
           className='app__player'
           volume={this.state.volume}
