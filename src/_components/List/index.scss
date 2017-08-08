@@ -1,0 +1,68 @@
+@import '../../_settings';
+
+.list {
+  $titleContainerHeight: 80px;
+
+  .list__title {
+    margin: 0;
+    padding: 25px 0 0 30px;
+    color: $colorText;
+    font-size: 30px;
+    height: $titleContainerHeight;
+    font-weight: bold;
+  }
+
+  .list__items {
+    overflow: auto;
+    height: calc(100% - #{$titleContainerHeight});
+  }
+
+  .list__item {
+    $imgWidth: 34px;
+    $imgHeight: $imgWidth;
+    $imgMarginRight: 8px;
+    $padding: 8px;
+
+    display: flex;
+    align-items: center;
+    padding-left: $padding;
+    height: $imgHeight + 2 * $padding;
+    border-bottom: 1px solid $colorBorderSeparator;
+
+    .list__item__img {
+      flex-shrink: 0;
+      width: $imgWidth;
+      height: $imgWidth;
+      margin-right: $imgMarginRight;
+      background-position: 50% 50%;
+      background-size: cover;
+    }
+
+    .list__item__content {
+      flex-basis: 100%;
+      width: calc(100% - #{$imgWidth} - #{$imgMarginRight});
+    }
+
+    .list__item__title,
+    .list__item__subtitle {
+      margin-top: 5px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .list__item__title {
+      color: $colorText;
+      font-size: 14px;
+    }
+
+    .list__item__subtitle {
+      color: $colorSecondary;
+      font-size: 13px;
+    }
+  }
+
+  .list__item__img {
+    background-color: $colorTertiary;
+  }
+}

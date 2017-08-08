@@ -1,0 +1,39 @@
+@import '../_settings';
+
+.app {
+  $playerHeight: 101px;
+  $rightSidebarWidth: 300px;
+
+  .app__player {
+    $container-separation: 20px;
+    $max-width: 675px + 2 * $container-separation;
+
+    height: $playerHeight;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-width: $max-width;
+    padding: 0 $container-separation;
+    margin: 0 auto;
+    border-bottom: 1px solid $colorBorderSeparator;
+  }
+
+  .app__allsongs,
+  .app__playing {
+    position: absolute;
+    top: $playerHeight;
+    bottom: 0;
+  }
+
+  .app__allsongs {
+    left: 0;
+    right: $rightSidebarWidth;
+    border-right: 1px solid $colorBorderSeparator;
+  }
+
+  .app__playing {
+    right: 0;
+    width: $rightSidebarWidth;
+  }
+}

@@ -1,0 +1,19 @@
+@import './_settings';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background-color: $colorPrimary;
+  font-family: $fontFamily;
+  user-select: none;
+}

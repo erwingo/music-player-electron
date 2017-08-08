@@ -1,0 +1,49 @@
+{
+  "name": "music-player-electron",
+  "version": "1.0.0",
+  "description": "Music Player",
+  "main": "main.js",
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack-dev-server",
+    "start": "electron ."
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/classnames": "^2.2.0",
+    "@types/fs-extra": "^4.0.0",
+    "@types/react": "^16.0.0",
+    "@types/react-dom": "^15.5.2",
+    "css-loader": "^0.28.4",
+    "electron": "~1.6.2",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "ts-loader": "^2.3.2",
+    "typescript": "^2.4.2",
+    "webfonts-loader": "^2.0.2",
+    "webpack": "^3.4.1",
+    "webpack-dev-server": "^2.6.1"
+  },
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "fs-extra": "^4.0.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-input-range": "^1.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erwingo/music-player-electron.git"
+  },
+  "keywords": [
+    "music",
+    "player",
+    "electron"
+  ],
+  "author": "Erwin Gaitan O <erwingaitano@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/erwingo/music-player-electron/issues"
+  },
+  "homepage": "https://github.com/erwingo/music-player-electron#readme"
+}

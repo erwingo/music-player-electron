@@ -1,0 +1,32 @@
+@import '../../_settings';
+
+.slider {
+  // TODO: Think about a better approach to this problem,
+  // how can we ensure that .input-range css class is not used in another
+  // component?
+  // Also when you have a ReactComponent and want to apply custom css to it.
+  // Maybe take a look into css modules or another solution
+  // @import '~react-input-range/lib/css/index';
+
+  .input-range__label {
+    display: none;
+  }
+
+  .input-range__track,
+  .input-range__slider-container {
+    transition: none;
+  }
+
+  .input-range__track {
+    background-color: #555;
+  }
+
+  .input-range__track--active {
+    background-color: $colorSecondary;
+  }
+
+  .input-range__slider {
+    border-color: $colorText;
+    background-color: $colorText;
+  }
+}
