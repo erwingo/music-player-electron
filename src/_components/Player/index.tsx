@@ -10,6 +10,8 @@ interface Props {
   isPlaying?: boolean;
   onVolumeChange?: (value: number) => void;
   onPlayOrPauseClick?: () => void;
+  onFastForwardClick?: () => void;
+  onFastBackwardClick?: () => void;
   mediaManager?: MediaManagerProps;
 }
 
@@ -29,6 +31,7 @@ export class Player extends React.PureComponent<Props, any> {
 
         <div className='player__controls'>
           <div
+            onClick={this.props.onFastBackwardClick}
             className='player__controls__prevnext icon is-fast-backward'
           />
           <div
@@ -39,6 +42,7 @@ export class Player extends React.PureComponent<Props, any> {
             )}
           />
           <div
+            onClick={this.props.onFastForwardClick}
             className='player__controls__prevnext icon is-fast-forward'
           />
         </div>

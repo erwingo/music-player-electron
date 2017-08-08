@@ -77,6 +77,8 @@ export class App extends React.Component<any, State> {
     this.handleRightSectionItemDblClick = this.handleRightSectionItemDblClick.bind(this);
     this.handleSidebarSectItemDblClick = this.handleSidebarSectItemDblClick.bind(this);
     this.handleShuffleClick = this.handleShuffleClick.bind(this);
+    this.handleFastBackwardClick = this.handleFastBackwardClick.bind(this);
+    this.handleFastForwardClick = this.handleFastForwardClick.bind(this);
 
     this.state = {
       isPlaying: false,
@@ -242,6 +244,31 @@ export class App extends React.Component<any, State> {
     );
   }
 
+  handleFastBackwardClick() {
+    this.playPreviousOrNextSong(false);
+  }
+
+  handleFastForwardClick() {
+    this.playPreviousOrNextSong();
+  }
+
+  // TODO: Way to sort methods by functionality/names
+  playPreviousOrNextSong(isNextSong = true) {
+    const queue = this.state.rightSection.items;
+    const currentSongIdx = queue.findIndex(el => el.id === this.state.currentSongId);
+
+    if (currentSongIdx === -1) { return; }
+
+    let songIdxToPlay = 0;
+    if (isNextSong) {
+      if (currentSongIdx < queue.length - 1) { songIdxToPlay = currentSongIdx + 1; }
+    } else {
+      if (currentSongIdx > 0) { songIdxToPlay = currentSongIdx - 1; }
+    }
+
+    this.setPlayingPlaylist(queue, { songIdxToPlay });
+  }
+
   render() {
     return (
       <div className='app'>
@@ -250,6 +277,8 @@ export class App extends React.Component<any, State> {
           volume={this.state.volume}
           onVolumeChange={this.handleVolumeChange}
           onPlayOrPauseClick={this.handlePlayOrPauseClick}
+          onFastBackwardClick={this.handleFastBackwardClick}
+          onFastForwardClick={this.handleFastForwardClick}
           isPlaying={this.state.isPlaying}
           mediaManager={{
             title: this.state.player.title,
