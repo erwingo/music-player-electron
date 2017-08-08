@@ -11,7 +11,7 @@ import './App.scss';
 import { AudioCore } from './AudioCore';
 import { List, ListItemProps } from './List';
 import { Player } from './Player';
-import { Sidebar } from './Sidebar';
+import { ActiveEls as SidebarActiveEls, Sidebar } from './Sidebar';
 
 interface NewSong extends types.Song {
   title: string;
@@ -47,6 +47,7 @@ interface State {
   isShuffled: boolean;
   isPlaying: boolean;
   currentSongId?: string;
+  sidebar: SidebarActiveEls;
   middleSection: {
     title: string;
     items: NewSong[]
@@ -82,6 +83,7 @@ export class App extends React.Component<any, State> {
       volume: 1,
       isRepeated: false,
       isShuffled: false,
+      sidebar: {},
       middleSection: { title: '', items: [] },
       rightSection: { items: [] },
       player: {}
@@ -176,6 +178,44 @@ export class App extends React.Component<any, State> {
     });
   }
 
+  handleSidebarSectItemClick(section: string, item: string) {
+    let newMiddleSection: { title: string; items: NewSong[] };
+
+    if (section === 'library' && item === 'allsongs') {
+      newMiddleSection = {
+        title: 'All Songs',
+        items: allSongs
+      };
+    } else {
+      newMiddleSection = { title: '-', items: [] };
+    }
+
+    this.setState({
+      ...this.state,
+      sidebar: {
+        ...this.state.sidebar,
+        sectionHighlightedId: section,
+        sectionItemHighlightedId: item
+      },
+      middleSection: { ...newMiddleSection }
+    });
+  }
+
+  handleSidebarSectItemDblClick(section: string, item: string) {
+    const items = allSongs;
+
+    this.setPlayingPlaylist(items, {
+      shuffle: this.state.isShuffled,
+      songIdxToPlay: 0,
+      state: {
+        sidebar: {
+          sectionSelectedId: section,
+          sectionItemSelectedId: item
+        }
+      }
+    });
+  }
+
   handleMiddleSectionItemDblClick(item: ListItemProps) {
     const song = allSongs.find(el => el.id === item.id)!;
     const songs = this.state.middleSection.items
@@ -191,33 +231,6 @@ export class App extends React.Component<any, State> {
     this.setPlayingPlaylist(this.state.rightSection.items, {
       shuffle: false,
       songIdToPlay: item.id
-    });
-  }
-
-  handleSidebarSectItemClick(section: string, item: string) {
-    let newMiddleSection: { title: string; items: NewSong[] };
-
-    if (section === 'library' && item === 'allsongs') {
-      newMiddleSection = {
-        title: 'All Songs',
-        items: allSongs
-      };
-    } else {
-      newMiddleSection = { title: '-', items: [] };
-    }
-
-    this.setState({
-      ...this.state,
-      middleSection: { ...newMiddleSection }
-    });
-  }
-
-  handleSidebarSectItemDblClick(section: string, item: string) {
-    const items = allSongs;
-
-    this.setPlayingPlaylist(items, {
-      shuffle: this.state.isShuffled,
-      songIdxToPlay: 0
     });
   }
 
@@ -257,6 +270,7 @@ export class App extends React.Component<any, State> {
           className='app__sidebar'
           onSectionItemClick={this.handleSidebarSectItemClick}
           onSectionItemDblClick={this.handleSidebarSectItemDblClick}
+          activeEls={this.state.sidebar}
           sections={[
             {
               id: 'library',
@@ -269,12 +283,14 @@ export class App extends React.Component<any, State> {
           className='app__middlesection'
           title={this.state.middleSection.title}
           items={this.state.middleSection.items}
+          itemSelected={this.state.currentSongId}
           onItemDoubleClick={this.handleMiddleSectionItemDblClick}
         />
         <List
           className='app__rightsection'
           title='Playing'
           items={this.state.rightSection.items}
+          itemSelected={this.state.currentSongId}
           onItemDoubleClick={this.handleRightSectionItemDblClick}
         />
       </div>

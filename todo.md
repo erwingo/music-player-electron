@@ -1,5 +1,6 @@
-# TODO
 - toggling shuffle should shuffle/unshuffle the queue
+
+# TODO
 - highlight list items
 - media controls should work
 - borderless window
@@ -13,3 +14,5 @@
 - generate executable file
 - shortcuts
 - use Redux
+
+# DONE

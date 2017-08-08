@@ -11,6 +11,7 @@ interface Props {
   style?: object;
   title: string;
   items?: ListItemProps[];
+  itemSelected?: string;
   onItemDoubleClick?: (item: ListItemProps) => void;
 }
 
@@ -27,6 +28,7 @@ export class List extends React.PureComponent<Props, any> {
               key={item.id}
               onDoubleClick={this.props.onItemDoubleClick}
               {...item}
+              itemSelected={this.props.itemSelected}
             />
           )}
         </div>

@@ -29,6 +29,14 @@
     height: $imgHeight + 2 * $padding;
     border-bottom: 1px solid $colorBorderSeparator;
 
+    &.is-selected {
+      background-color: $colorSelected;
+
+      .list__item__subtitle {
+        color: #000;
+      }
+    }
+
     .list__item__img {
       flex-shrink: 0;
       width: $imgWidth;

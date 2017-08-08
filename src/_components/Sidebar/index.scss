@@ -13,6 +13,14 @@
       .sidebar__section__items__item {
         padding: 10px 10px 10px 20px;
         font-size: 16px;
+
+        &.is-highlighted {
+          background-color: $colorHighlighted;
+        }
+
+        &.is-selected {
+          background-color: $colorSelected;
+        }
       }
     }
   }
