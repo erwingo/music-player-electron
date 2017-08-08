@@ -46,6 +46,7 @@ interface State {
   isRepeated: boolean;
   isShuffled: boolean;
   isPlaying: boolean;
+  currentSongId?: string;
   middleSection: {
     title: string;
     items: NewSong[]
@@ -72,7 +73,9 @@ export class App extends React.Component<any, State> {
     this.handleVolumeChange = this.handleVolumeChange.bind(this);
     this.handlePlayOrPauseClick = this.handlePlayOrPauseClick.bind(this);
     this.handleSidebarSectItemClick = this.handleSidebarSectItemClick.bind(this);
+    this.handleRightSectionItemDblClick = this.handleRightSectionItemDblClick.bind(this);
     this.handleSidebarSectItemDblClick = this.handleSidebarSectItemDblClick.bind(this);
+    this.handleShuffleClick = this.handleShuffleClick.bind(this);
 
     this.state = {
       isPlaying: false,
@@ -82,6 +85,19 @@ export class App extends React.Component<any, State> {
       middleSection: { title: '', items: [] },
       rightSection: { items: [] },
       player: {}
+    };
+
+    audioCoreEl.onEnd = () => {
+      const queue = this.state.rightSection.items;
+      const newSongIdx = queue.findIndex(el => el.id === this.state.currentSongId) + 1;
+
+      if (newSongIdx >= queue.length) {
+        if (this.state.isRepeated) {
+          this.setPlayingPlaylist(queue, { shuffle: false, songIdxToPlay: 0 });
+        }
+      } else {
+        this.setPlayingPlaylist(queue, { shuffle: false, songIdxToPlay: newSongIdx });
+      }
     };
 
     audioCoreEl.onProgress = (time: number, duration: number) => {
@@ -117,45 +133,34 @@ export class App extends React.Component<any, State> {
     this.setState({ ...this.state, isPlaying: shouldPlay });
   }
 
-  playSongFromPlaylist(songs: NewSong[], songIdx?: number, songId?: string) {
-    let song: NewSong | undefined;
-    if (typeof songIdx === 'number') {
-      song = songs[songIdx];
-    } else if (songId) {
-      song = songs.find(el => el.id === songId);
-    }
-
-    if (song) {
-      const filePath = song.path + '/_file' + song.fileExtension;
-      audioCoreEl.setSrc(getAbsPathFromFilesRootPath(filePath));
-      audioCoreEl.play(0);
-    }
-
-    return song;
-  }
-
   setPlayingPlaylist(
     songs: NewSong[],
     options: {
+      shuffle?: boolean,
       songIdxToPlay?: number,
-      songIdToPlay?: string
+      songIdToPlay?: string,
+      state?: any
     } = {}
   ) {
-    let newSongs: NewSong[];
-
-    if (this.state.isShuffled) {
-      newSongs = _.shuffle(songs);
-    } else {
-      newSongs = songs;
-    }
+    let newSongs = songs;
+    if (options.shuffle) { newSongs = _.shuffle(songs); }
 
     let player = this.state.player;
-    const songToPlay =
-      this.playSongFromPlaylist(newSongs, options.songIdxToPlay, options.songIdToPlay);
+    let songToPlay: NewSong | undefined;
+    if (typeof options.songIdxToPlay === 'number') {
+      songToPlay = newSongs[options.songIdxToPlay];
+    } else if (options.songIdToPlay) {
+      songToPlay = newSongs.find(el => el.id === options.songIdToPlay);
+    }
 
+    let currentSongId = this.state.currentSongId;
     if (songToPlay) {
+      const filePath = songToPlay.path + '/_file' + songToPlay.fileExtension;
+      audioCoreEl.setSrc(getAbsPathFromFilesRootPath(filePath));
+      audioCoreEl.play(0);
+      currentSongId = songToPlay.id;
       player = {
-        title: songToPlay.name,
+        title: songToPlay.title,
         subtitle: songToPlay.desc,
         imgUrl: songToPlay.imgUrl
       };
@@ -165,7 +170,9 @@ export class App extends React.Component<any, State> {
       ...this.state,
       isPlaying: !!songToPlay,
       rightSection: { items: newSongs },
-      player
+      currentSongId,
+      player,
+      ...options.state
     });
   }
 
@@ -175,19 +182,16 @@ export class App extends React.Component<any, State> {
       .map(el => allSongs.find(el2 => el2.id === el.id)!);
 
     this.setPlayingPlaylist(songs, {
+      shuffle: this.state.isShuffled,
       songIdToPlay: song.id
     });
   }
 
-  handleSidebarSectItemDblClick(section: string, item: string) {
-    if (section === 'library' && item === 'allsongs') {
-      this.setState({
-        ...this.state,
-        middleSection: { title: 'All Songs', items: allSongs }
-      });
-    }
-
-    this.setPlayingPlaylist(allSongs, { songIdxToPlay: 0 });
+  handleRightSectionItemDblClick(item: ListItemProps) {
+    this.setPlayingPlaylist(this.state.rightSection.items, {
+      shuffle: false,
+      songIdToPlay: item.id
+    });
   }
 
   handleSidebarSectItemClick(section: string, item: string) {
@@ -206,6 +210,23 @@ export class App extends React.Component<any, State> {
       ...this.state,
       middleSection: { ...newMiddleSection }
     });
+  }
+
+  handleSidebarSectItemDblClick(section: string, item: string) {
+    const items = allSongs;
+
+    this.setPlayingPlaylist(items, {
+      shuffle: this.state.isShuffled,
+      songIdxToPlay: 0
+    });
+  }
+
+  handleShuffleClick() {
+    const shouldShuffle = !this.state.isShuffled;
+    this.setPlayingPlaylist(
+      shouldShuffle ? this.state.rightSection.items : this.state.middleSection.items,
+      { shuffle: shouldShuffle, state: { isShuffled: shouldShuffle } }
+    );
   }
 
   render() {
@@ -229,9 +250,7 @@ export class App extends React.Component<any, State> {
             onRepeatBtnClick: () => {
               this.setState({ ...this.state, isRepeated: !this.state.isRepeated });
             },
-            onShuffleBtnClick: () => {
-              this.setState({ ...this.state, isShuffled: !this.state.isShuffled });
-            }
+            onShuffleBtnClick: this.handleShuffleClick
           }}
         />
         <Sidebar
@@ -256,6 +275,7 @@ export class App extends React.Component<any, State> {
           className='app__rightsection'
           title='Playing'
           items={this.state.rightSection.items}
+          onItemDoubleClick={this.handleRightSectionItemDblClick}
         />
       </div>
     );
