@@ -1,7 +1,8 @@
 {
   "name": "music-player-electron",
   "version": "1.0.0",
-  "description": "Music Player",
+  "productName": "Music Player",
+  "description": "Music Player with Electron",
   "main": "index.js",
   "scripts": {
     "build": "webpack",

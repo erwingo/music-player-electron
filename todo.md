@@ -9,6 +9,7 @@
   - shuffle
 - media controls should work
 - system notification on next/prev songs
+- name Music Player
 
 # TODO
 - shortcuts
@@ -24,7 +25,6 @@
   - caraluna at 1:55 skipped a fraction of the song
 - generate executable file
 - icon
-- name Music Player
 - use Redux
 - use ts in index.ts
 
