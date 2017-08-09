@@ -5,7 +5,7 @@
 import * as _ from 'lodash';
 import * as React from 'react';
 import { getAbsPathFromFilesRootPath, getJsonFromFile } from '../_helpers';
-import { electronStore, getFilesRootPath } from '../_singletons/main';
+import { defaultPreferences, electronStore, getFilesRootPath } from '../_singletons/main';
 import * as types from '../types';
 import './App.scss';
 import { AudioCore } from './AudioCore';
@@ -83,9 +83,9 @@ export class App extends React.Component<any, State> {
 
     this.state = {
       isPlaying: false,
-      volume: 1,
-      isRepeated: false,
-      isShuffled: false,
+      volume: electronStore.get('volume', defaultPreferences.volume),
+      isRepeated: electronStore.get('isRepeated', defaultPreferences.isRepeated),
+      isShuffled: electronStore.get('isShuffled', defaultPreferences.isShuffled),
       sidebar: {},
       middleSection: { title: '', items: [] },
       rightSection: { items: [] },

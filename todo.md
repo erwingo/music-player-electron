@@ -3,12 +3,12 @@
 - borderless window
 - minwidth/height window
 - check if resizing the window fast you still see the white bg
-
-# TODO
 - persistent storage of user settings
   - volume
   - repeat
   - shuffle
+
+# TODO
 - playing playlist should scroll when a song finishes
 - arrow key navigation
 - media controls should work

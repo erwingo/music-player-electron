@@ -15,14 +15,8 @@ function outputJsonInUserDataDirSync(filename: string, data: any) {
 }
 
 export class ElectronStore {
-  // private store: any;
-
-  constructor() {
-    // console.log(readJsonSync('erwin.json'));
-  }
-
-  get(key: string) {
-    dotProp.get(this.store, key);
+  get(key: string, defaultValue?: any) {
+    return dotProp.get(this.store, key, defaultValue);
   }
 
   set(key: string, value: any) {
@@ -35,6 +29,10 @@ export class ElectronStore {
     const newStore = this.store;
     dotProp.delete(newStore, key);
     this.store = newStore;
+  }
+
+  getStore() {
+    return this.store;
   }
 
   private get store(): object {
