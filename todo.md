@@ -23,5 +23,6 @@
 - icon
 - name Music Player
 - use Redux
+- use ts in index.ts
 
 # DONE

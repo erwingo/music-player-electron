@@ -2,11 +2,11 @@
   "name": "music-player-electron",
   "version": "1.0.0",
   "description": "Music Player",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
     "build": "webpack",
     "dev": "webpack-dev-server",
-    "start": "tsc main.ts && electron ."
+    "start": "electron ."
   },
   "license": "MIT",
   "devDependencies": {

@@ -1,7 +1,7 @@
-import * as electron from 'electron';
-import * as path from 'path';
-import * as url from 'url';
-import * as constantEvents from './src/_constants/events';
+const path = require('path');
+const url = require('url');
+const electron = require('electron');
+const constantEvents = require('./src/_constants/events');
 
 // Module to control application life.
 const app = electron.app;
@@ -10,7 +10,7 @@ const BrowserWindow = electron.BrowserWindow;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow: Electron.BrowserWindow | null;
+let mainWindow;
 
 // TODO: Create a more modular createWindow function
 // Create the browser window.
@@ -55,15 +55,15 @@ app.on('ready', () => {
   // Media keys events
   // Copied from https://gist.github.com/twolfson/0a03820e27583cc9ad6e
   electron.globalShortcut.register('medianexttrack', () => {
-    mainWindow!.webContents.send(constantEvents.MEDIA_NEXT_TRACK);
+    mainWindow.webContents.send(constantEvents.MEDIA_NEXT_TRACK);
   });
 
   electron.globalShortcut.register('mediaprevioustrack', () => {
-    mainWindow!.webContents.send(constantEvents.MEDIA_PREV_TRACK);
+    mainWindow.webContents.send(constantEvents.MEDIA_PREV_TRACK);
   });
 
   electron.globalShortcut.register('mediaplaypause', () => {
-    mainWindow!.webContents.send(constantEvents.MEDIA_PLAY_PAUSE);
+    mainWindow.webContents.send(constantEvents.MEDIA_PLAY_PAUSE);
   });
 });
 

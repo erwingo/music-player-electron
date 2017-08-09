@@ -1,3 +1,7 @@
 main.js
 node_modules
 dist
+
+# TODO: This is required for main.js so i have to think about a better
+# way of requiring this in main.js
+src/_constants/events.js
