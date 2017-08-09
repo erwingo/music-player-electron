@@ -5,8 +5,9 @@
   "description": "Music Player with Electron",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "dev": "webpack-dev-server",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && webpack -p --config webpack.config.prod",
+    "dev": "webpack-dev-server --config webpack.config.dev",
     "start": "electron .",
     "package-mac": "electron-packager . --platform=darwin --arch=x64 --out=products --icon=src/_images/logo.png.icns"
   },

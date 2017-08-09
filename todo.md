@@ -11,9 +11,10 @@
 - system notification on next/prev songs
 - name Music Player
 - icon
+- menu
 
 # TODO
-- menu
+- generate .app file with dist folder
 - shortcuts
   - space should pause
   - cmd + right/left should next/prev songs
@@ -25,7 +26,6 @@
 - songs
   - conquest of paradise song is not working
   - caraluna at 1:55 skipped a fraction of the song
-- generate executable file
 - use Redux
 - use ts in index.ts (u can't for now)
 

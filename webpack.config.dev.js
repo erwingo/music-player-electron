@@ -2,9 +2,9 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  target: 'electron',
+  target: 'electron-renderer',
   entry: {
-    index: './src/index.tsx',
+    index: './src/index.tsx'
   },
   output: {
     filename: '[name].bundle.js',
@@ -24,20 +24,14 @@ module.exports = {
       // SVG Fonts
       {
         test: /\/_fonts\/.*\/font\.js$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'webfonts-loader'
-        ]
+        use: ['style-loader', 'css-loader', 'webfonts-loader']
       },
 
       // Typescript
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
-        use: [
-          'ts-loader'
-        ],
+        use: ['ts-loader']
       },
 
       // SCSS
@@ -48,11 +42,7 @@ module.exports = {
         // inside it in your project
         // exclude: /node_modules/,
 
-        use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader'
-        ]
+        use: ['style-loader', 'css-loader', 'sass-loader']
       }
     ]
   },
