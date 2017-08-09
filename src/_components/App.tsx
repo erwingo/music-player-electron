@@ -22,26 +22,28 @@ interface NewSong extends types.Song {
   imgUrl?: string;
 }
 
+const artists: types.Artist[] =
+  getJsonFromFile(getAbsPathFromFilesRootPath('_data/artists.json'));
+
+const albums: types.Album[] =
+  getJsonFromFile(getAbsPathFromFilesRootPath('_data/albums.json'));
+
 const allSongs: NewSong[] =
   (getJsonFromFile(getAbsPathFromFilesRootPath('_data/songs.json')) as types.Song[])
     .map(song => {
       const allCovers = [...song.covers, ...song.albumCovers, ...song.artistCovers];
       const firstCover = allCovers[0] as (string | undefined);
+      const artistName = artists.find(el => el.id === song.artistId)!.name;
+      const album = albums.find(el => el.id === song.albumId);
 
       return {
         ...song,
         title: song.name,
-        desc: song.albumId ? song.artistId + ' - ' + song.albumId : song.artistId,
+        desc: album ? artistName + ' - ' + album.name : artistName,
         allCovers,
         imgUrl: firstCover ? getAbsPathFromFilesRootPath(firstCover) : undefined
       };
     });
-
-// const artists: types.Artist[] =
-//   getJsonFromFile(getAbsPathFromFilesRootPath('_data/artists.json'));
-
-// const albums: types.Artist[] =
-//   getJsonFromFile(getAbsPathFromFilesRootPath('_data/albums.json'));
 
 interface State {
   volume: number;
@@ -66,9 +68,16 @@ interface State {
   };
 }
 
-const audioCoreEl = new AudioCore();
+function showNotification(title: string, subtitle: string, options = {
+  silent: true
+}) {
+  const notificationOptions = { body: subtitle, silent: options.silent } as any;
+  const _ = new Notification(title, notificationOptions);
+}
 
 export class App extends React.Component<any, State> {
+  audioCoreEl = new AudioCore();
+
   constructor() {
     super();
     this.handleMiddleSectionItemDblClick = this.handleMiddleSectionItemDblClick.bind(this);
@@ -94,20 +103,18 @@ export class App extends React.Component<any, State> {
       player: {}
     };
 
-    audioCoreEl.onEnd = () => {
+    this.audioCoreEl.onEnd = () => {
       const queue = this.state.rightSection.items;
       const newSongIdx = queue.findIndex(el => el.id === this.state.currentSongId) + 1;
 
-      if (newSongIdx >= queue.length) {
-        if (this.state.isRepeated) {
-          this.setPlayingPlaylist(queue, { shuffle: false, songIdxToPlay: 0 });
-        }
+      if (this.state.isRepeated || newSongIdx < queue.length) {
+        this.playPreviousOrNextSong(true);
       } else {
-        this.setPlayingPlaylist(queue, { shuffle: false, songIdxToPlay: newSongIdx });
+        // TODO: Go to first song and pause
       }
     };
 
-    audioCoreEl.onProgress = (time: number, duration: number) => {
+    this.audioCoreEl.onProgress = (time: number, duration: number) => {
       this.setState({
         ...this.state,
         player: {
@@ -132,11 +139,11 @@ export class App extends React.Component<any, State> {
   }
 
   handleDragCompleted(value: number) {
-    audioCoreEl.setCurrentTime(value);
+    this.audioCoreEl.setCurrentTime(value);
   }
 
   handleVolumeChange(value: number) {
-    audioCoreEl.setVolume(value);
+    this.audioCoreEl.setVolume(value);
     electronStore.set('volume', value);
     this.setState({ ...this.state, volume: value });
   }
@@ -145,9 +152,9 @@ export class App extends React.Component<any, State> {
     const shouldPlay = !this.state.isPlaying;
 
     if (shouldPlay) {
-      audioCoreEl.play();
+      this.audioCoreEl.play();
     } else {
-      audioCoreEl.pause();
+      this.audioCoreEl.pause();
     }
 
     this.setState({ ...this.state, isPlaying: shouldPlay });
@@ -180,8 +187,8 @@ export class App extends React.Component<any, State> {
     let currentSongId = this.state.currentSongId;
     if (songToPlay) {
       const filePath = songToPlay.path + '/_file' + songToPlay.fileExtension;
-      audioCoreEl.setSrc(getAbsPathFromFilesRootPath(filePath));
-      audioCoreEl.play(0);
+      this.audioCoreEl.setSrc(getAbsPathFromFilesRootPath(filePath));
+      this.audioCoreEl.play(0);
       currentSongId = songToPlay.id;
       player = {
         title: songToPlay.title,
@@ -294,6 +301,11 @@ export class App extends React.Component<any, State> {
       if (currentSongIdx > 0) { songIdxToPlay = currentSongIdx - 1; }
     }
 
+    // Only show notification when window is not focused
+    if (!ipcRenderer.sendSync(constantEvents.SYNC_GET_WINDOW_FOCUS_STATUS)) {
+      const song = queue[songIdxToPlay];
+      showNotification(song.title, song.desc);
+    }
     this.setPlayingPlaylist(queue, { songIdxToPlay });
   }
 

@@ -8,6 +8,7 @@
   - repeat
   - shuffle
 - media controls should work
+- system notification on next/prev songs
 
 # TODO
 - shortcuts
@@ -18,7 +19,9 @@
 - playing playlist should scroll when a song finishes
 - arrow key navigation
 - tests
-- conquest of paradise song is not working
+- songs
+  - conquest of paradise song is not working
+  - caraluna at 1:55 skipped a fraction of the song
 - generate executable file
 - icon
 - name Music Player

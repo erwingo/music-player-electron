@@ -10,6 +10,7 @@ const BrowserWindow = electron.BrowserWindow;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
+/** @type {Electron.BrowserWindow | undefined} */
 let mainWindow;
 
 // TODO: Create a more modular createWindow function
@@ -51,6 +52,10 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow();
+
+  electron.ipcMain.on(constantEvents.SYNC_GET_WINDOW_FOCUS_STATUS, evt => {
+    evt.returnValue = mainWindow.isFocused();
+  });
 
   // Media keys events
   // Copied from https://gist.github.com/twolfson/0a03820e27583cc9ad6e
