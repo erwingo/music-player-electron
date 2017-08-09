@@ -1,6 +1,7 @@
 const path = require('path');
 const url = require('url');
 const electron = require('electron');
+const { menu } = require('./src/mainMenu');
 const constantEvents = require('./src/_constants/events');
 
 // Module to control application life.
@@ -52,6 +53,7 @@ function createWindow() {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow();
+  electron.Menu.setApplicationMenu(menu);
 
   electron.ipcMain.on(constantEvents.SYNC_GET_WINDOW_FOCUS_STATUS, evt => {
     evt.returnValue = mainWindow.isFocused();

@@ -10,8 +10,10 @@
 - media controls should work
 - system notification on next/prev songs
 - name Music Player
+- icon
 
 # TODO
+- menu
 - shortcuts
   - space should pause
   - cmd + right/left should next/prev songs
@@ -24,8 +26,7 @@
   - conquest of paradise song is not working
   - caraluna at 1:55 skipped a fraction of the song
 - generate executable file
-- icon
 - use Redux
-- use ts in index.ts
+- use ts in index.ts (u can't for now)
 
 # DONE
