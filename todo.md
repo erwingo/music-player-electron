@@ -7,15 +7,21 @@
   - volume
   - repeat
   - shuffle
+- media controls should work
 
 # TODO
+- shortcuts
+  - space should pause
+  - cmd + right/left should next/prev songs
+  - cmd + up/down should increase/decrease volume
+- persistent storage of window size
 - playing playlist should scroll when a song finishes
 - arrow key navigation
-- media controls should work
-- shortcuts
 - tests
 - conquest of paradise song is not working
 - generate executable file
+- icon
+- name Music Player
 - use Redux
 
 # DONE

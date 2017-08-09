@@ -2,8 +2,10 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/7896
 // import * as shuffle from 'lodash/fp/shuffle';
 
+import { ipcRenderer } from 'electron';
 import * as _ from 'lodash';
 import * as React from 'react';
+import * as constantEvents from '../_constants/events';
 import { getAbsPathFromFilesRootPath, getJsonFromFile } from '../_helpers';
 import { defaultPreferences, electronStore, getFilesRootPath } from '../_singletons/main';
 import * as types from '../types';
@@ -115,6 +117,18 @@ export class App extends React.Component<any, State> {
         }
       });
     };
+
+    ipcRenderer.addListener(constantEvents.MEDIA_NEXT_TRACK, () => {
+      this.playPreviousOrNextSong(true);
+    });
+
+    ipcRenderer.addListener(constantEvents.MEDIA_PREV_TRACK, () => {
+      this.playPreviousOrNextSong(false);
+    });
+
+    ipcRenderer.addListener(constantEvents.MEDIA_PLAY_PAUSE, () => {
+      this.playOrPause();
+    });
   }
 
   handleDragCompleted(value: number) {
@@ -127,7 +141,7 @@ export class App extends React.Component<any, State> {
     this.setState({ ...this.state, volume: value });
   }
 
-  handlePlayOrPauseClick() {
+  playOrPause() {
     const shouldPlay = !this.state.isPlaying;
 
     if (shouldPlay) {
@@ -137,6 +151,10 @@ export class App extends React.Component<any, State> {
     }
 
     this.setState({ ...this.state, isPlaying: shouldPlay });
+  }
+
+  handlePlayOrPauseClick() {
+    this.playOrPause();
   }
 
   setPlayingPlaylist(
@@ -259,11 +277,11 @@ export class App extends React.Component<any, State> {
   }
 
   handleFastForwardClick() {
-    this.playPreviousOrNextSong();
+    this.playPreviousOrNextSong(true);
   }
 
   // TODO: Way to sort methods by functionality/names
-  playPreviousOrNextSong(isNextSong = true) {
+  playPreviousOrNextSong(isNextSong: boolean) {
     const queue = this.state.rightSection.items;
     const currentSongIdx = queue.findIndex(el => el.id === this.state.currentSongId);
 

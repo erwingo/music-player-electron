@@ -1,6 +1,7 @@
 import * as electron from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import * as constantEvents from './src/_constants/events';
 
 // Module to control application life.
 const app = electron.app;
@@ -11,8 +12,9 @@ const BrowserWindow = electron.BrowserWindow;
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow: Electron.BrowserWindow | null;
 
+// TODO: Create a more modular createWindow function
+// Create the browser window.
 function createWindow() {
-  // Create the browser window.
   const { minWidth, minHeight } = { minWidth: 800, minHeight: 600 };
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
 
@@ -47,7 +49,23 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  createWindow();
+
+  // Media keys events
+  // Copied from https://gist.github.com/twolfson/0a03820e27583cc9ad6e
+  electron.globalShortcut.register('medianexttrack', () => {
+    mainWindow!.webContents.send(constantEvents.MEDIA_NEXT_TRACK);
+  });
+
+  electron.globalShortcut.register('mediaprevioustrack', () => {
+    mainWindow!.webContents.send(constantEvents.MEDIA_PREV_TRACK);
+  });
+
+  electron.globalShortcut.register('mediaplaypause', () => {
+    mainWindow!.webContents.send(constantEvents.MEDIA_PLAY_PAUSE);
+  });
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -55,6 +73,8 @@ app.on('window-all-closed', () => {
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit();
+  } else {
+    console.log('All windows closed but not exiting because OSX');
   }
 });
 
