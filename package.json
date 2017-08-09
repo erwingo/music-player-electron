@@ -7,7 +7,8 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack-dev-server",
-    "start": "electron ."
+    "start": "electron .",
+    "package-mac": "electron-packager . --platform=darwin --arch=x64 --out=products --icon=src/_images/logo.png.icns"
   },
   "license": "MIT",
   "devDependencies": {
