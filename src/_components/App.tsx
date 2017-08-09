@@ -5,7 +5,7 @@
 import * as _ from 'lodash';
 import * as React from 'react';
 import { getAbsPathFromFilesRootPath, getJsonFromFile } from '../_helpers';
-import { getFilesRootPath } from '../_singletons/main';
+import { electronStore, getFilesRootPath } from '../_singletons/main';
 import * as types from '../types';
 import './App.scss';
 import { AudioCore } from './AudioCore';
@@ -76,7 +76,8 @@ export class App extends React.Component<any, State> {
     this.handleSidebarSectItemClick = this.handleSidebarSectItemClick.bind(this);
     this.handleRightSectionItemDblClick = this.handleRightSectionItemDblClick.bind(this);
     this.handleSidebarSectItemDblClick = this.handleSidebarSectItemDblClick.bind(this);
-    this.handleShuffleClick = this.handleShuffleClick.bind(this);
+    this.handleShuffleBtnClick = this.handleShuffleBtnClick.bind(this);
+    this.handleRepeatBtnClick = this.handleRepeatBtnClick.bind(this);
     this.handleFastBackwardClick = this.handleFastBackwardClick.bind(this);
     this.handleFastForwardClick = this.handleFastForwardClick.bind(this);
 
@@ -122,6 +123,7 @@ export class App extends React.Component<any, State> {
 
   handleVolumeChange(value: number) {
     audioCoreEl.setVolume(value);
+    electronStore.set('volume', value);
     this.setState({ ...this.state, volume: value });
   }
 
@@ -236,12 +238,20 @@ export class App extends React.Component<any, State> {
     });
   }
 
-  handleShuffleClick() {
-    const shouldShuffle = !this.state.isShuffled;
+  handleShuffleBtnClick() {
+    const newIsShuffle = !this.state.isShuffled;
+    electronStore.set('isShuffled', newIsShuffle);
+
     this.setPlayingPlaylist(
-      shouldShuffle ? this.state.rightSection.items : this.state.middleSection.items,
-      { shuffle: shouldShuffle, state: { isShuffled: shouldShuffle } }
+      newIsShuffle ? this.state.rightSection.items : this.state.middleSection.items,
+      { shuffle: newIsShuffle, state: { isShuffled: newIsShuffle } }
     );
+  }
+
+  handleRepeatBtnClick() {
+    const newIsRepeated = !this.state.isRepeated;
+    electronStore.set('isRepeated', newIsRepeated);
+    this.setState({ ...this.state, isRepeated: newIsRepeated });
   }
 
   handleFastBackwardClick() {
@@ -290,10 +300,8 @@ export class App extends React.Component<any, State> {
             isRepeated: this.state.isRepeated,
             isShuffled: this.state.isShuffled,
             onDragCompleted: this.handleDragCompleted,
-            onRepeatBtnClick: () => {
-              this.setState({ ...this.state, isRepeated: !this.state.isRepeated });
-            },
-            onShuffleBtnClick: this.handleShuffleClick
+            onRepeatBtnClick: this.handleRepeatBtnClick ,
+            onShuffleBtnClick: this.handleShuffleBtnClick
           }}
         />
         <Sidebar

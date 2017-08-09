@@ -6,11 +6,12 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack-dev-server",
-    "start": "electron ."
+    "start": "tsc main.ts && electron ."
   },
   "license": "MIT",
   "devDependencies": {
     "@types/classnames": "^2.2.0",
+    "@types/dot-prop": "^4.1.0",
     "@types/fs-extra": "^4.0.0",
     "@types/lodash": "^4.14.71",
     "@types/react": "^16.0.0",
@@ -28,6 +29,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "dot-prop": "^4.2.0",
     "fs-extra": "^4.0.1",
     "lodash": "^4.17.4",
     "react": "^15.6.1",

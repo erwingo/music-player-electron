@@ -10,8 +10,9 @@ module.exports = {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
 
-    // This is necessary for HMR in Electron, the one inside devServer: doesn't work
-    // using '/' will result in urls using the file System!
+    // This is necessary for HMR in Electron. Also the `publicPath` in `devServer`
+    // doesn't work. If we dont specify this or use '/' it will result in urls
+    // referencing to the file System!
     publicPath: 'http://localhost:8080/'
   },
   resolve: {
@@ -36,13 +37,17 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           'ts-loader'
-        ]
+        ],
       },
 
       // SCSS
       {
         test: /\.s?css$/,
+
+        // Only exclude node_modules if you are NOT referencing any s?css file
+        // inside it in your project
         // exclude: /node_modules/,
+
         use: [
           'style-loader',
           'css-loader',
