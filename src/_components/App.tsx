@@ -33,8 +33,8 @@ const allSongs: NewSong[] =
     .map(song => {
       const allCovers = [...song.covers, ...song.albumCovers, ...song.artistCovers];
       const firstCover = allCovers[0] as (string | undefined);
-      const artistName = artists.find(el => el.id === song.artistId)!.name;
-      const album = albums.find(el => el.id === song.albumId);
+      const artistName = _.find(artists, el => el.id === song.artistId)!.name;
+      const album = _.find(albums, el => el.id === song.albumId);
 
       return {
         ...song,
@@ -105,7 +105,7 @@ export class App extends React.Component<any, State> {
 
     this.audioCoreEl.onEnd = () => {
       const queue = this.state.rightSection.items;
-      const newSongIdx = queue.findIndex(el => el.id === this.state.currentSongId) + 1;
+      const newSongIdx = _.findIndex(queue, el => el.id === this.state.currentSongId) + 1;
 
       if (this.state.isRepeated || newSongIdx < queue.length) {
         this.playPreviousOrNextSong(true);
@@ -181,7 +181,7 @@ export class App extends React.Component<any, State> {
     if (typeof options.songIdxToPlay === 'number') {
       songToPlay = newSongs[options.songIdxToPlay];
     } else if (options.songIdToPlay) {
-      songToPlay = newSongs.find(el => el.id === options.songIdToPlay);
+      songToPlay = _.find(newSongs, el => el.id === options.songIdToPlay);
     }
 
     let currentSongId = this.state.currentSongId;
@@ -246,9 +246,9 @@ export class App extends React.Component<any, State> {
   }
 
   handleMiddleSectionItemDblClick(item: ListItemProps) {
-    const song = allSongs.find(el => el.id === item.id)!;
+    const song = _.find(allSongs, el => el.id === item.id)!;
     const songs = this.state.middleSection.items
-      .map(el => allSongs.find(el2 => el2.id === el.id)!);
+      .map(el => _.find(allSongs, el2 => el2.id === el.id)!);
 
     this.setPlayingPlaylist(songs, {
       shuffle: this.state.isShuffled,
@@ -290,7 +290,7 @@ export class App extends React.Component<any, State> {
   // TODO: Way to sort methods by functionality/names
   playPreviousOrNextSong(isNextSong: boolean) {
     const queue = this.state.rightSection.items;
-    const currentSongIdx = queue.findIndex(el => el.id === this.state.currentSongId);
+    const currentSongIdx = _.findIndex(queue, el => el.id === this.state.currentSongId);
 
     if (currentSongIdx === -1) { return; }
 
