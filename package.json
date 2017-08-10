@@ -4,14 +4,30 @@
   "productName": "Music Player",
   "description": "Music Player with Electron",
   "main": "index.js",
+  "config": {
+    "electronPackagerIgnore": "^/(src/app|(?!(src|dist|index.js|LICENSE|node_modules)))"
+  },
   "scripts": {
+    "build": "npm run clean && npm run webpack",
     "clean": "rm -rf dist",
-    "build": "npm run clean && webpack -p --config webpack.config.prod",
-    "dev": "webpack-dev-server --config webpack.config.dev",
+    "dev": "npm run webpack-server & NODE_ENV=development electron .",
+    "lint": "echo TODO: Missing Lints",
+    "package-mac": "npm run test && npm run build && electron-packager . --platform=darwin --arch=x64 --ignore=$npm_package_config_electronPackagerIgnore --out=products --icon=src/_images/logo.png.icns",
     "start": "electron .",
-    "package-mac": "electron-packager . --platform=darwin --arch=x64 --out=products --icon=src/_images/logo.png.icns"
+    "test": "echo TODO: Missing Tests",
+    "webpack": "webpack -p --config webpack.config.prod",
+    "webpack-server": "webpack-dev-server --config webpack.config.dev"
   },
   "license": "MIT",
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "dot-prop": "^4.2.0",
+    "fs-extra": "^4.0.1",
+    "lodash": "^4.17.4",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-input-range": "^1.2.1"
+  },
   "devDependencies": {
     "@types/classnames": "^2.2.0",
     "@types/dot-prop": "^4.1.0",
@@ -29,15 +45,6 @@
     "webfonts-loader": "^2.0.2",
     "webpack": "^3.5.2",
     "webpack-dev-server": "^2.7.1"
-  },
-  "dependencies": {
-    "classnames": "^2.2.5",
-    "dot-prop": "^4.2.0",
-    "fs-extra": "^4.0.1",
-    "lodash": "^4.17.4",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "react-input-range": "^1.2.1"
   },
   "repository": {
     "type": "git",

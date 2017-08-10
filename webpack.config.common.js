@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 exports.entry = {
-  index: './src/index.tsx'
+  index: './src/app/index.tsx'
 };
 
 exports.output = {

@@ -5,6 +5,7 @@ module.exports = {
   target: 'electron-renderer',
   entry: commonConfig.entry,
   output: Object.assign(commonConfig.output, {
+    publicPath: path.resolve(__dirname, 'dist'),
     path: path.resolve(__dirname, 'dist')
   }),
   devtool: 'source-map',

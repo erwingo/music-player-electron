@@ -5,15 +5,15 @@
 import { ipcRenderer } from 'electron';
 import * as _ from 'lodash';
 import * as React from 'react';
-import * as constantEvents from '../_constants/events';
-import { getAbsPathFromFilesRootPath, getJsonFromFile } from '../_helpers';
-import { defaultPreferences, electronStore, getFilesRootPath } from '../_singletons/main';
-import * as types from '../types';
-import './App.scss';
-import { AudioCore } from './AudioCore';
-import { List, ListItemProps } from './List';
-import { Player } from './Player';
-import { ActiveEls as SidebarActiveEls, Sidebar } from './Sidebar';
+import * as constantEvents from '../../../_constants/events';
+import { getAbsPathFromFilesRootPath, getJsonFromFile } from '../../_helpers';
+import { defaultPreferences, electronStore, getFilesRootPath } from '../../_singletons/main';
+import * as types from '../../_types';
+import { AudioCore } from '../AudioCore';
+import { List, ListItemProps } from '../List';
+import { Player } from '../Player';
+import { ActiveEls as SidebarActiveEls, Sidebar } from '../Sidebar';
+import './index.scss';
 
 interface NewSong extends types.Song {
   title: string;

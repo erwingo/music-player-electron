@@ -1,8 +1,11 @@
+// I can't control how this file is called so I set default env variables
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+
 const path = require('path');
 const url = require('url');
 const electron = require('electron');
-const { menu } = require('./src/mainMenu');
 const constantEvents = require('./src/_constants/events');
+const { menu } = require('./src/_singletons/mainMenu');
 
 // Module to control application life.
 const app = electron.app;
@@ -31,13 +34,19 @@ function createWindow() {
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
+    pathname: path.join(
+      __dirname,
+      process.env.NODE_ENV === 'production' ?
+        'src/mainWindow/index.html' :
+        'src/mainWindow/index.dev.html'
+    ),
     protocol: 'file:',
     slashes: true
   }));
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (process.env.NODE_ENV !== 'production') {
+    mainWindow.webContents.openDevTools();
+  }
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {

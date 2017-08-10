@@ -6,9 +6,10 @@ import * as path from 'path';
 import * as React from 'react';
 import * as reactDOM from 'react-dom';
 import { App } from './_components/App';
+import './_css/index.scss';
 import './_fonts/icons/font';
-import './index.scss';
 
+console.log(process.env.NODE_ENV);
 reactDOM.render(
   <App />,
   document.getElementById('app')

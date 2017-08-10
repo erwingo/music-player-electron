@@ -3,8 +3,9 @@ import * as React from 'react';
 
 // TODO: You need to use this import
 // https://github.com/davidchin/react-input-range/pull/90
-import * as InputRange from 'react-input-range';
+const InputRange = require('react-input-range');
 // import InputRange from 'react-input-range';
+// import * as InputRange from 'react-input-range';
 
 import 'react-input-range/lib/css/index.css';
 import './index.scss';

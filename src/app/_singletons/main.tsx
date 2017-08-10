@@ -1,4 +1,4 @@
-import { ElectronStore } from '../ElectronStore';
+import { ElectronStore } from '../_components/ElectronStore';
 
 let filesRootPath = '/Users/erwin/MEGAsync/music-player-files';
 
