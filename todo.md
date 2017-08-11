@@ -22,17 +22,17 @@
     when you cmd+q the electron app. Best solution is to split npm run dev tasks:
     npm run webpack-dev-server and NODE_ENV=development electron .
 - prevent app from zooming in
+- playing playlist should scroll when a song starts
 
 # TODO
-- songs
-  - conquest of paradise song is not working
-  - caraluna at 1:55 skipped a fraction of the song
 - shortcuts
   - space should pause
   - cmd + right/left should next/prev songs
   - cmd + up/down should increase/decrease volume
+- songs
+  - conquest of paradise song is not working
+  - caraluna at 1:55 skipped a fraction of the song
 - fastforward/fastbackward songs!!!!!!!!
-- playing playlist should scroll when a song finishes
 - debug main process
 - arrow key navigation
 - tests

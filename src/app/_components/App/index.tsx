@@ -59,7 +59,8 @@ interface State {
     items: NewSong[]
   };
   rightSection: {
-    items: NewSong[]
+    items: NewSong[],
+    rowToScroll?: number | string;
   };
   player: {
     title?: string;
@@ -202,7 +203,10 @@ export class App extends React.Component<any, State> {
     this.setState({
       ...this.state,
       isPlaying: !!songToPlay,
-      rightSection: { items: newSongs },
+      rightSection: {
+        rowToScroll: options.songIdToPlay || options.songIdxToPlay,
+        items: newSongs
+      },
       currentSongId,
       player,
       ...options.state
@@ -360,6 +364,7 @@ export class App extends React.Component<any, State> {
           className='app__rightsection'
           title='Playing'
           items={this.state.rightSection.items}
+          rowToScroll={this.state.rightSection.rowToScroll}
           itemSelected={this.state.currentSongId}
           onItemDoubleClick={this.handleRightSectionItemDblClick}
         />
