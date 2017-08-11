@@ -21,6 +21,7 @@
   - FIX: i had to killall node, apparently some webpack leaks are left behind
     when you cmd+q the electron app. Best solution is to split npm run dev tasks:
     npm run webpack-dev-server and NODE_ENV=development electron .
+- prevent app from zooming in
 
 # TODO
 - songs
@@ -31,7 +32,6 @@
   - cmd + right/left should next/prev songs
   - cmd + up/down should increase/decrease volume
 - fastforward/fastbackward songs!!!!!!!!
-- prevent app from zooming in
 - playing playlist should scroll when a song finishes
 - debug main process
 - arrow key navigation

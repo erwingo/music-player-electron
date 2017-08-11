@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const commonConfig = require('./webpack.config.common');
+
 const port = process.env.PORT || 8080;
 
 module.exports = {
@@ -23,7 +24,7 @@ module.exports = {
 
   // webpack-dev-server
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
-    hot: true
+    hotOnly: true,
+    contentBase: path.join(__dirname, 'dist')
   }
 };
