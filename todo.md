@@ -14,6 +14,13 @@
 - menu
 - generate .app file with dist folder
 - persistent storage of window size/position
+- BUILD PROCESS BUGS
+  - webpack-dev-server is running multiple times when saving 1 files. You can check by
+    commenting everything in src/app/index.tsx and running webpack-dev-server
+  - TS in webpack-dev-server is checking all the project even when im only watching 1 file
+  - FIX: i had to killall node, apparently some webpack leaks are left behind
+    when you cmd+q the electron app. Best solution is to split npm run dev tasks:
+    npm run webpack-dev-server and NODE_ENV=development electron .
 
 # TODO
 - songs
@@ -24,10 +31,6 @@
   - cmd + right/left should next/prev songs
   - cmd + up/down should increase/decrease volume
 - playing playlist should scroll when a song finishes
-- BUILD PROCESS BUGS
-  - webpack-dev-server is running multiple times when saving 1 files. You can check by
-    commenting everything in src/app/index.tsx and running webpack-dev-server
-  - ts in webpack-dev-server is checking all the project even when im only watching 1 file
 - debug main process
 - arrow key navigation
 - tests

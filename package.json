@@ -10,13 +10,13 @@
   "scripts": {
     "build": "npm run clean && npm run webpack",
     "clean": "rm -rf dist",
-    "dev": "npm run webpack-server & NODE_ENV=development electron .",
+    "dev": "NODE_ENV=development electron .",
     "lint": "echo TODO: Missing Lints",
     "package-mac": "npm run test && npm run build && electron-packager . --platform=darwin --arch=x64 --ignore=$npm_package_config_electronPackagerIgnore --out=products --icon=src/_images/logo.png.icns",
     "start": "electron .",
     "test": "echo TODO: Missing Tests",
     "webpack": "webpack -p --config webpack.config.prod",
-    "webpack-server": "webpack-dev-server --config webpack.config.dev"
+    "webpack-dev-server": "webpack-dev-server --config webpack.config.dev"
   },
   "license": "MIT",
   "dependencies": {
