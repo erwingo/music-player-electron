@@ -9,7 +9,6 @@ import { App } from './_components/App';
 import './_css/index.scss';
 import './_fonts/icons/font';
 
-console.log(process.env.NODE_ENV);
 reactDOM.render(
   <App />,
   document.getElementById('app')

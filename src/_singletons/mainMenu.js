@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 const { app, Menu, shell } = require('electron');
 const pkg = require('../../package');
 

@@ -6,8 +6,10 @@ import { ipcRenderer } from 'electron';
 import * as _ from 'lodash';
 import * as React from 'react';
 import * as constantEvents from '../../../_constants/events';
+import { defaults } from '../../../_constants/userPreferences';
+import * as electronStore from '../../../_singletons/electronStore';
 import { getAbsPathFromFilesRootPath, getJsonFromFile } from '../../_helpers';
-import { defaultPreferences, electronStore, getFilesRootPath } from '../../_singletons/main';
+import { getFilesRootPath } from '../../_singletons/main';
 import * as types from '../../_types';
 import { AudioCore } from '../AudioCore';
 import { List, ListItemProps } from '../List';
@@ -94,9 +96,9 @@ export class App extends React.Component<any, State> {
 
     this.state = {
       isPlaying: false,
-      volume: electronStore.get('volume', defaultPreferences.volume),
-      isRepeated: electronStore.get('isRepeated', defaultPreferences.isRepeated),
-      isShuffled: electronStore.get('isShuffled', defaultPreferences.isShuffled),
+      volume: electronStore.store.get(electronStore.VOLUME, defaults.volume),
+      isRepeated: electronStore.store.get(electronStore.IS_REPEATED, defaults.isRepeated),
+      isShuffled: electronStore.store.get(electronStore.IS_SHUFFLED, defaults.isShuffled),
       sidebar: {},
       middleSection: { title: '', items: [] },
       rightSection: { items: [] },
@@ -144,7 +146,7 @@ export class App extends React.Component<any, State> {
 
   handleVolumeChange(value: number) {
     this.audioCoreEl.setVolume(value);
-    electronStore.set('volume', value);
+    electronStore.store.set(electronStore.VOLUME, value);
     this.setState({ ...this.state, volume: value });
   }
 
@@ -265,7 +267,7 @@ export class App extends React.Component<any, State> {
 
   handleShuffleBtnClick() {
     const newIsShuffle = !this.state.isShuffled;
-    electronStore.set('isShuffled', newIsShuffle);
+    electronStore.store.set(electronStore.IS_SHUFFLED, newIsShuffle);
 
     this.setPlayingPlaylist(
       newIsShuffle ? this.state.rightSection.items : this.state.middleSection.items,
@@ -275,7 +277,7 @@ export class App extends React.Component<any, State> {
 
   handleRepeatBtnClick() {
     const newIsRepeated = !this.state.isRepeated;
-    electronStore.set('isRepeated', newIsRepeated);
+    electronStore.store.set(electronStore.IS_REPEATED, newIsRepeated);
     this.setState({ ...this.state, isRepeated: newIsRepeated });
   }
 

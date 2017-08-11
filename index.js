@@ -3,8 +3,11 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
 const path = require('path');
 const url = require('url');
+// eslint-disable-next-line
 const electron = require('electron');
+const electronStore = require('./src/_singletons/electronStore');
 const constantEvents = require('./src/_constants/events');
+const { defaults } = require('./src/_constants/userPreferences');
 const { menu } = require('./src/_singletons/mainMenu');
 
 // Module to control application life.
@@ -16,18 +19,19 @@ const BrowserWindow = electron.BrowserWindow;
 // be closed automatically when the JavaScript object is garbage collected.
 /** @type {Electron.BrowserWindow | undefined} */
 let mainWindow;
+const mainWindowSize = electronStore.store.get(electronStore.SIZE);
+const mainWindowPosition = electronStore.store.get(electronStore.POSITION);
 
 // TODO: Create a more modular createWindow function
 // Create the browser window.
 function createWindow() {
-  const { minWidth, minHeight } = { minWidth: 800, minHeight: 600 };
-  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
-
   mainWindow = new BrowserWindow({
-    width,
-    height,
-    minWidth,
-    minHeight,
+    width: (mainWindowSize && mainWindowSize.width) || defaults.mainWindowMinWidth,
+    height: (mainWindowSize && mainWindowSize.height) || defaults.mainWindowMinHeight,
+    minWidth: defaults.mainWindowMinWidth,
+    minHeight: defaults.mainWindowMinHeight,
+    x: (mainWindowPosition && mainWindowPosition.x) || undefined,
+    y: (mainWindowPosition && mainWindowPosition.y) || undefined,
     backgroundColor: '#000',
     titleBarStyle: 'hidden'
   });
@@ -47,6 +51,16 @@ function createWindow() {
   if (process.env.NODE_ENV !== 'production') {
     mainWindow.webContents.openDevTools();
   }
+
+  mainWindow.on('resize', () => {
+    const size = mainWindow.getSize();
+    electronStore.store.set(electronStore.SIZE, { width: size[0], height: size[1] });
+  });
+
+  mainWindow.on('move', () => {
+    const pos = mainWindow.getPosition();
+    electronStore.store.set(electronStore.POSITION, { x: pos[0], y: pos[1] });
+  });
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
