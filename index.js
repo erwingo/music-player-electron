@@ -1,8 +1,6 @@
-// I can't control how this file is called so I set default env variables
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-
 const path = require('path');
 const url = require('url');
+const isDev = require('electron-is-dev');
 // eslint-disable-next-line
 const electron = require('electron');
 const electronStore = require('./src/_singletons/electronStore');
@@ -40,17 +38,11 @@ function createWindow() {
   mainWindow.loadURL(url.format({
     pathname: path.join(
       __dirname,
-      process.env.NODE_ENV === 'production' ?
-        'src/mainWindow/index.html' :
-        'src/mainWindow/index.dev.html'
+      isDev ? 'src/mainWindow/index.dev.html' : 'src/mainWindow/index.html'
     ),
     protocol: 'file:',
     slashes: true
   }));
-
-  if (process.env.NODE_ENV !== 'production') {
-    mainWindow.webContents.openDevTools();
-  }
 
   mainWindow.on('resize', () => {
     const size = mainWindow.getSize();
@@ -75,8 +67,10 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
-  createWindow();
   electron.Menu.setApplicationMenu(menu);
+  createWindow();
+
+  if (isDev) { mainWindow.webContents.openDevTools(); }
 
   electron.ipcMain.on(constantEvents.SYNC_GET_WINDOW_FOCUS_STATUS, evt => {
     evt.returnValue = mainWindow.isFocused();

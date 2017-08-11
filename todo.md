@@ -30,6 +30,8 @@
   - space should pause
   - cmd + right/left should next/prev songs
   - cmd + up/down should increase/decrease volume
+- fastforward/fastbackward songs!!!!!!!!
+- prevent app from zooming in
 - playing playlist should scroll when a song finishes
 - debug main process
 - arrow key navigation

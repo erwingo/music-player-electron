@@ -10,7 +10,7 @@
   "scripts": {
     "build": "npm run clean && npm run webpack",
     "clean": "rm -rf dist",
-    "dev": "NODE_ENV=development electron .",
+    "dev": "electron .",
     "lint": "echo TODO: Missing Lints",
     "package-mac": "npm run test && npm run build && electron-packager . --platform=darwin --arch=x64 --ignore=$npm_package_config_electronPackagerIgnore --out=products --icon=src/_images/logo.png.icns",
     "start": "electron .",
@@ -22,6 +22,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "dot-prop": "^4.2.0",
+    "electron-is-dev": "^0.3.0",
     "fs-extra": "^4.0.1",
     "lodash": "^4.17.4",
     "react": "^15.6.1",

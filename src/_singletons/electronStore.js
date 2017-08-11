@@ -21,6 +21,10 @@ function outputJsonInUserDataDirSync(filename, data) {
   fs.outputJsonSync(path.resolve(userDataPath, filename), data);
 }
 
+function removeFile(filename) {
+  fs.removeSync(path.resolve(userDataPath, filename));
+}
+
 // export class ElectronStore {
 class ElectronStore {
   constructor() {
@@ -46,6 +50,10 @@ class ElectronStore {
     this.store = newStore;
   }
 
+  deleteAll() {
+    this.store = null;
+  }
+
   getStore() {
     return this.store;
   }
@@ -64,7 +72,11 @@ class ElectronStore {
   // eslint-disable-next-line
   set store(value) {
     try {
-      outputJsonInUserDataDirSync('userPreferences.json', value);
+      if (value) {
+        outputJsonInUserDataDirSync('userPreferences.json', value);
+      } else {
+        removeFile('userPreferences.json');
+      }
     } catch (err) {
       // TODO: How to handle errors when saving data?
       console.log('Error setting store', err);
