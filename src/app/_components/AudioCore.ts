@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 export class AudioCore {
   private audioEl: HTMLAudioElement;
   onEnd?: () => void;
@@ -8,6 +10,8 @@ export class AudioCore {
   constructor(src?: string, volume?: number) {
     this.audioEl = new Audio(src);
     this.audioEl.volume = volume || 1;
+    this.setSrc = _.debounce(this.setSrc, 300, { leading: true });
+    this.play = _.debounce(this.play, 300, { leading: true });
 
     this.audioEl.addEventListener('timeupdate', () => {
       if (this.onProgress) {
