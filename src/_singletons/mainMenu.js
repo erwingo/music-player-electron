@@ -1,6 +1,5 @@
 // eslint-disable-next-line
 const { app, Menu, shell, BrowserWindow } = require('electron');
-const isDev = require('electron-is-dev');
 const pkg = require('../../package');
 const electronStore = require('./electronStore');
 
@@ -85,7 +84,7 @@ if (process.platform === 'darwin') {
   });
 }
 
-if (isDev) {
+if (process.env.NODE_ENV !== 'production') {
   template.push({
     label: 'Dev Tools',
     submenu: [

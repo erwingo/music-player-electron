@@ -1,17 +1,14 @@
+require('../../.env');
 const path = require('path');
 const url = require('url');
-const isDev = require('electron-is-dev');
 // eslint-disable-next-line
-const electron = require('electron');
+const { app, BrowserWindow, Menu, ipcMain, globalShortcut } = require('electron');
 const electronStore = require('../_singletons/electronStore');
 const constantEvents = require('../_constants/events');
 const { defaults } = require('../_constants/userPreferences');
 const { menu } = require('../_singletons/mainMenu');
 
-// Module to control application life.
-const app = electron.app;
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow;
+const isProd = process.env.NODE_ENV === 'production';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -34,19 +31,19 @@ function createWindow() {
     titleBarStyle: 'hidden'
   });
 
-  // and load the index.html of the app.
-  if (isDev) {
+  // Load the index.html of the app.
+  if (isProd) {
+    mainWindow.loadURL(url.format({
+      pathname: path.join(__dirname, '../../dist/index.html'),
+      protocol: 'file:',
+      slashes: true
+    }));
+  } else {
     mainWindow.loadURL(url.format({
       protocol: 'http',
       // TODO: Pass the port or host
       host: 'localhost:8080',
       pathname: 'index.html'
-    }));
-  } else {
-    mainWindow.loadURL(url.format({
-      pathname: path.join(__dirname, './dist/index.html'),
-      protocol: 'file:',
-      slashes: true
     }));
   }
 
@@ -73,26 +70,26 @@ function createWindow() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
-  electron.Menu.setApplicationMenu(menu);
+  Menu.setApplicationMenu(menu);
   createWindow();
 
-  if (isDev) { mainWindow.webContents.openDevTools(); }
+  if (!isProd) { mainWindow.webContents.openDevTools(); }
 
-  electron.ipcMain.on(constantEvents.SYNC_GET_WINDOW_FOCUS_STATUS, evt => {
+  ipcMain.on(constantEvents.SYNC_GET_WINDOW_FOCUS_STATUS, evt => {
     evt.returnValue = mainWindow.isFocused();
   });
 
   // Media keys events
   // Copied from https://gist.github.com/twolfson/0a03820e27583cc9ad6e
-  electron.globalShortcut.register('medianexttrack', () => {
+  globalShortcut.register('medianexttrack', () => {
     mainWindow.webContents.send(constantEvents.MEDIA_NEXT_TRACK);
   });
 
-  electron.globalShortcut.register('mediaprevioustrack', () => {
+  globalShortcut.register('mediaprevioustrack', () => {
     mainWindow.webContents.send(constantEvents.MEDIA_PREV_TRACK);
   });
 
-  electron.globalShortcut.register('mediaplaypause', () => {
+  globalShortcut.register('mediaplaypause', () => {
     mainWindow.webContents.send(constantEvents.MEDIA_PLAY_PAUSE);
   });
 });

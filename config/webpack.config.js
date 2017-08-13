@@ -1,15 +1,16 @@
+require('../.env');
 const path = require('path');
 const fs = require('fs-extra');
 // eslint-disable-next-line
 const webpack = require('webpack');
 // eslint-disable-next-line
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const StringReplacer = require('./webpackPlugins/StringReplacer');
+// eslint-disable-next-line
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === 'production';
 const devPort = process.env.PORT || 8080;
 const outputPath = path.resolve(__dirname, '../dist');
-const publicPath = isProduction ? outputPath : '';
 
 const output = {
   // Adapt the file to a commonJS (node) environment.
@@ -30,19 +31,18 @@ const rules = [{
 }];
 
 const plugins = [
-  new StringReplacer({
-    input: path.resolve(__dirname, '../src/main/mainWindow/index.html'),
-    output: 'index.html',
-    replacements: [
-      { pattern: new RegExp('#{PUBLIC_PATH}', 'g'), replacement: publicPath }
-    ]
+  new HtmlWebpackPlugin({
+    title: 'Music Player',
+    inject: 'body',
+    template: path.resolve(__dirname, '../src/main/mainWindow/index.html'),
+    filename: 'index.html'
   }),
   new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
   })
 ];
 
-if (isProduction) {
+if (isProd) {
   // chunkhash is the chunk's checksum, useful for caching purposes
   output.filename = '[name].bundle.[chunkhash].js';
 
@@ -52,7 +52,7 @@ if (isProduction) {
   // your public path is set to http://cdn.example.com, the bundled,
   // file will have background-image: url(http://cdn.example.com/a.png).
   // Also works for file paths
-  output.publicPath = publicPath;
+  output.publicPath = outputPath;
 
   rules.push(
     {
@@ -99,7 +99,7 @@ module.exports = {
     index: path.resolve(__dirname, '../src/renderer/index.tsx')
   },
   output,
-  devtool: isProduction ? 'source-map' : 'inline-source-map',
+  devtool: isProd ? 'source-map' : 'inline-source-map',
   resolve: { extensions: ['.js', '.ts', '.tsx'] },
   module: { rules },
   plugins,

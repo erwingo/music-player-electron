@@ -5,18 +5,19 @@
   "description": "Music Player with Electron",
   "main": "src/main/index.js",
   "config": {
-    "electronPackagerIgnore": "^/(src/renderer|(?!(src|dist|index.js|LICENSE|node_modules)))"
+    "electronPackagerIgnore": "^/(src/renderer|(?!(|src|dist|package\\.json|LICENSE|node_modules)))"
   },
   "scripts": {
     "build": "npm run clean && npm run webpack",
+    "build-dev": "npm run clean && NODE_ENV=dev npm run webpack",
     "clean": "find . -name '.DS_Store' -delete ; rm -rf dist",
-    "dev": "electron .",
     "lint": "echo TODO: Missing Lints",
-    "package-mac": "npm run test && npm run build && electron-packager . --platform=darwin --arch=x64 --ignore=$npm_package_config_electronPackagerIgnore --out=products --icon=src/_images/logo.png.icns",
+    "package-mac": "npm run test && npm run build && electron-packager . --platform=darwin --arch=x64 --ignore=$npm_package_config_electronPackagerIgnore --out=dist/products --icon=src/_images/logo.png.icns",
     "start": "electron .",
+    "start-dev": "NODE_ENV=dev electron .",
     "test": "echo TODO: Missing Tests",
-    "webpack": "NODE_ENV=production webpack --config config/webpack.config",
-    "webpack-dev-server": "webpack-dev-server --config config/webpack.config"
+    "webpack": "webpack --config config/webpack.config",
+    "webpack-dev-server": "NODE_ENV=dev webpack-dev-server --config config/webpack.config"
   },
   "license": "MIT",
   "dependencies": {
@@ -40,6 +41,7 @@
     "css-loader": "^0.28.4",
     "electron": "^1.6.12",
     "extract-text-webpack-plugin": "^3.0.0",
+    "html-webpack-plugin": "^2.30.1",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
