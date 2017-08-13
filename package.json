@@ -5,7 +5,7 @@
   "description": "Music Player with Electron",
   "main": "src/main/index.js",
   "config": {
-    "electronPackagerIgnore": "^/(src/renderer|(?!(|src|dist|package\\.json|LICENSE|node_modules)))"
+    "electronPackagerIgnore": "^/(src\/renderer|config|(?!(|src|dist|package\\.json|LICENSE|node_modules)))"
   },
   "scripts": {
     "build": "npm run clean && npm run webpack",
