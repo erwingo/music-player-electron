@@ -25,13 +25,11 @@
 - playing playlist should scroll when a song starts
 
 # TODO
+- directory structure should start with main/renderer folders in src
 - shortcuts
   - space should pause
   - cmd + right/left should next/prev songs
   - cmd + up/down should increase/decrease volume
-- songs
-  - conquest of paradise song is not working
-  - caraluna at 1:55 skipped a fraction of the song
 - fastforward/fastbackward songs!!!!!!!!
 - debug main process
 - arrow key navigation

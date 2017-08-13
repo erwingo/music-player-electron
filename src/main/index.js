@@ -3,10 +3,10 @@ const url = require('url');
 const isDev = require('electron-is-dev');
 // eslint-disable-next-line
 const electron = require('electron');
-const electronStore = require('./src/_singletons/electronStore');
-const constantEvents = require('./src/_constants/events');
-const { defaults } = require('./src/_constants/userPreferences');
-const { menu } = require('./src/_singletons/mainMenu');
+const electronStore = require('../_singletons/electronStore');
+const constantEvents = require('../_constants/events');
+const { defaults } = require('../_constants/userPreferences');
+const { menu } = require('../_singletons/mainMenu');
 
 // Module to control application life.
 const app = electron.app;
@@ -35,14 +35,20 @@ function createWindow() {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL(url.format({
-    pathname: path.join(
-      __dirname,
-      isDev ? 'src/mainWindow/index.dev.html' : 'src/mainWindow/index.html'
-    ),
-    protocol: 'file:',
-    slashes: true
-  }));
+  if (isDev) {
+    mainWindow.loadURL(url.format({
+      protocol: 'http',
+      // TODO: Pass the port or host
+      host: 'localhost:8080',
+      pathname: 'index.html'
+    }));
+  } else {
+    mainWindow.loadURL(url.format({
+      pathname: path.join(__dirname, './dist/index.html'),
+      protocol: 'file:',
+      slashes: true
+    }));
+  }
 
   mainWindow.on('resize', () => {
     const size = mainWindow.getSize();
