@@ -12,7 +12,7 @@
     "build-dev": "npm run clean && NODE_ENV=dev npm run webpack",
     "clean": "find . -name '.DS_Store' -delete ; rm -rf dist",
     "lint": "echo TODO: Missing Lints",
-    "package-mac": "npm run test && npm run build && electron-packager . --platform=darwin --arch=x64 --ignore=$npm_package_config_electronPackagerIgnore --out=dist/products --icon=src/_images/logo.png.icns",
+    "package-mac": "npm run test && npm run build && electron-packager . --platform=darwin --arch=x64 --ignore=$npm_package_config_electronPackagerIgnore --out=products --icon=src/_images/logo.png.icns",
     "start": "electron .",
     "start-dev": "NODE_ENV=dev electron .",
     "test": "echo TODO: Missing Tests",
