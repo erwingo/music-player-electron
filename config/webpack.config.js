@@ -56,7 +56,7 @@ if (isProd) {
 
   rules.push(
     {
-      test: /\/_fonts\/.*\/font\.js$/,
+      test: /[\\\/]_fonts[\\\/].*[\\\/]font\.js$/,
       use: ExtractTextPlugin.extract({
         fallback: 'style-loader',
         use: ['css-loader', 'webfonts-loader']
@@ -81,7 +81,7 @@ if (isProd) {
 
   rules.push(
     {
-      test: /\/_fonts\/.*\/font\.js$/,
+      test: /[\\\/]_fonts[\\\/].*[\\\/]font\.js$/,
       use: ['style-loader', 'css-loader', 'webfonts-loader']
     },
     {
