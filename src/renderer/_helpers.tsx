@@ -15,5 +15,5 @@ export function getBgImgUrl(url?: string) {
 
   // NOTE: encodeURI encodes double quotes but not single quotes that's
   // why I use double quotes inside the url function
-  return `url("${encodeURI(url)}")`;
+  return `url("${encodeURI(url.replace(/\\/g, '/'))}")`;
 }
