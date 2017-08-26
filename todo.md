@@ -23,9 +23,12 @@
     npm run webpack-dev-server and NODE_ENV=development electron .
 - prevent app from zooming in
 - playing playlist should scroll when a song starts
+- directory structure should start with main/renderer folders in src
 
 # TODO
-- directory structure should start with main/renderer folders in src
+- menu item to select the directory root of media files
+  - it should validate the structure of the folder
+- if player is paused and u go to next/prev song, you should keep the player paused!
 - shortcuts
   - space should pause
   - cmd + right/left should next/prev songs

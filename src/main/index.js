@@ -25,7 +25,7 @@ function createWindow() {
     height: (mainWindowSize && mainWindowSize.height) || defaults.mainWindowMinHeight,
     webPreferences: {
       webSecurity: false
-    }, 
+    },
     minWidth: defaults.mainWindowMinWidth,
     minHeight: defaults.mainWindowMinHeight,
     x: (mainWindowPosition && mainWindowPosition.x) || undefined,
@@ -77,6 +77,10 @@ app.on('ready', () => {
   createWindow();
 
   if (!isProd) { mainWindow.webContents.openDevTools(); }
+
+  ipcMain.on(constantEvents.NEW_ROOT_PATH_SELECTED, dirPath => {
+    mainWindow.webContents.send(constantEvents.NEW_ROOT_PATH_SELECTED, dirPath);
+  });
 
   ipcMain.on(constantEvents.SYNC_GET_WINDOW_FOCUS_STATUS, evt => {
     evt.returnValue = mainWindow.isFocused();

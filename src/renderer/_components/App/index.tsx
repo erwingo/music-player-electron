@@ -8,8 +8,8 @@ import * as React from 'react';
 import * as constantEvents from '../../../_constants/events';
 import { defaults } from '../../../_constants/userPreferences';
 import * as electronStore from '../../../_singletons/electronStore';
+import { isAValidFilesRootPath, setFilesRootPath } from '../../../_singletons/main';
 import { getAbsPathFromFilesRootPath, getJsonFromFile } from '../../_helpers';
-import { getFilesRootPath } from '../../_singletons/main';
 import * as types from '../../_types';
 import { AudioCore } from '../AudioCore';
 import { List, ListItemProps } from '../List';
@@ -24,34 +24,14 @@ interface NewSong extends types.Song {
   imgUrl?: string;
 }
 
-const artists: types.Artist[] =
-  getJsonFromFile(getAbsPathFromFilesRootPath('_data/artists.json'));
-
-const albums: types.Album[] =
-  getJsonFromFile(getAbsPathFromFilesRootPath('_data/albums.json'));
-
-const allSongs: NewSong[] =
-  (getJsonFromFile(getAbsPathFromFilesRootPath('_data/songs.json')) as types.Song[])
-    .map(song => {
-      const allCovers = [...song.covers, ...song.albumCovers, ...song.artistCovers];
-      const firstCover = allCovers[0] as (string | undefined);
-      const artistName = _.find(artists, el => el.id === song.artistId)!.name;
-      const album = _.find(albums, el => el.id === song.albumId);
-
-      return {
-        ...song,
-        title: song.name,
-        desc: album ? artistName + ' - ' + album.name : artistName,
-        allCovers,
-        imgUrl: firstCover ? getAbsPathFromFilesRootPath(firstCover) : undefined
-      };
-    });
-
 interface State {
   volume: number;
   isRepeated: boolean;
   isShuffled: boolean;
   isPlaying: boolean;
+  artists: types.Artist[];
+  albums: types.Album[];
+  allSongs: NewSong[];
   currentSongId?: string;
   sidebar: SidebarActiveEls;
   middleSection: {
@@ -78,6 +58,35 @@ function showNotification(title: string, subtitle: string, options = {
   const _ = new Notification(title, notificationOptions);
 }
 
+function getArtistsAlbumsAndAllSongs() {
+  let artists: types.Artist[] = [];
+  let albums: types.Album[] = [];
+  let allSongs: NewSong[] = [];
+
+  if (isAValidFilesRootPath()) {
+    artists = getJsonFromFile(getAbsPathFromFilesRootPath('_data/artists.json'));
+    albums = getJsonFromFile(getAbsPathFromFilesRootPath('_data/albums.json'));
+
+    allSongs = (getJsonFromFile(getAbsPathFromFilesRootPath('_data/songs.json')) as types.Song[])
+      .map(song => {
+        const allCovers = [...song.covers, ...song.albumCovers, ...song.artistCovers];
+        const firstCover = allCovers[0] as (string | undefined);
+        const artistName = _.find(artists, el => el.id === song.artistId)!.name;
+        const album = _.find(albums, el => el.id === song.albumId);
+
+        return {
+          ...song,
+          title: song.name,
+          desc: album ? artistName + ' - ' + album.name : artistName,
+          allCovers,
+          imgUrl: firstCover ? 'file:' + getAbsPathFromFilesRootPath(firstCover) : undefined
+        };
+      });
+    }
+
+  return { artists, albums, allSongs };
+}
+
 export class App extends React.Component<any, State> {
   audioCoreEl = new AudioCore();
 
@@ -95,9 +104,14 @@ export class App extends React.Component<any, State> {
     this.handleFastBackwardClick = this.handleFastBackwardClick.bind(this);
     this.handleFastForwardClick = this.handleFastForwardClick.bind(this);
 
+    const { artists, albums, allSongs } = getArtistsAlbumsAndAllSongs();
+
     this.state = {
       isPlaying: false,
       volume: electronStore.store.get(electronStore.VOLUME, defaults.volume),
+      artists,
+      albums,
+      allSongs,
       isRepeated: electronStore.store.get(electronStore.IS_REPEATED, defaults.isRepeated),
       isShuffled: electronStore.store.get(electronStore.IS_SHUFFLED, defaults.isShuffled),
       sidebar: {},
@@ -127,6 +141,12 @@ export class App extends React.Component<any, State> {
         }
       });
     };
+
+    ipcRenderer.addListener(constantEvents.NEW_ROOT_PATH_SELECTED, (_: any, dirPath: string) => {
+      setFilesRootPath(dirPath);
+      const { albums, allSongs, artists } = getArtistsAlbumsAndAllSongs();
+      this.setState({ ...this.state, albums, artists, allSongs });
+    });
 
     ipcRenderer.addListener(constantEvents.MEDIA_NEXT_TRACK, () => {
       this.playPreviousOrNextSong(true);
@@ -190,7 +210,7 @@ export class App extends React.Component<any, State> {
     let currentSongId = this.state.currentSongId;
     if (songToPlay) {
       const filePath = songToPlay.path + '/_file' + songToPlay.fileExtension;
-      this.audioCoreEl.setSrc(getAbsPathFromFilesRootPath(filePath));
+      this.audioCoreEl.setSrc('file:' + getAbsPathFromFilesRootPath(filePath));
       this.audioCoreEl.play(0);
       currentSongId = songToPlay.id;
       player = {
@@ -219,7 +239,7 @@ export class App extends React.Component<any, State> {
     if (section === 'library' && item === 'allsongs') {
       newMiddleSection = {
         title: 'All Songs',
-        items: allSongs
+        items: this.state.allSongs
       };
     } else {
       newMiddleSection = { title: '-', items: [] };
@@ -237,7 +257,7 @@ export class App extends React.Component<any, State> {
   }
 
   handleSidebarSectItemDblClick(section: string, item: string) {
-    const items = allSongs;
+    const items = this.state.allSongs;
 
     this.setPlayingPlaylist(items, {
       shuffle: this.state.isShuffled,
@@ -252,9 +272,9 @@ export class App extends React.Component<any, State> {
   }
 
   handleMiddleSectionItemDblClick(item: ListItemProps) {
-    const song = _.find(allSongs, el => el.id === item.id)!;
+    const song = _.find(this.state.allSongs, el => el.id === item.id)!;
     const songs = this.state.middleSection.items
-      .map(el => _.find(allSongs, el2 => el2.id === el.id)!);
+      .map(el => _.find(this.state.allSongs, el2 => el2.id === el.id)!);
 
     this.setPlayingPlaylist(songs, {
       shuffle: this.state.isShuffled,

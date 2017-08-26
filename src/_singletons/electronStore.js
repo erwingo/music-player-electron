@@ -87,6 +87,7 @@ class ElectronStore {
 exports.VOLUME = 'volume';
 exports.IS_REPEATED = 'isRepeated';
 exports.IS_SHUFFLED = 'isShuffled';
+exports.ROOT_PATH = 'rootPath';
 exports.SIZE = 'size';
 exports.POSITION = 'position';
 exports.store = new ElectronStore();

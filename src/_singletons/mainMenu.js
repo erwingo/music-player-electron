@@ -1,20 +1,13 @@
 // eslint-disable-next-line
-const { app, Menu, shell, BrowserWindow } = require('electron');
+const { app, Menu, shell, BrowserWindow, dialog, ipcMain } = require('electron');
 const pkg = require('../../package');
+const { NEW_ROOT_PATH_SELECTED } = require('../_constants/events');
+const { setFilesRootPath } = require('./main');
 const electronStore = require('./electronStore');
 
 function toggleDevTools(win) {
   win = win || BrowserWindow.getFocusedWindow();
   if (win) { win.toggleDevTools(); }
-}
-
-function openDevTools(win, showDevTools) {
-  win = win || BrowserWindow.getFocusedWindow();
-
-  if (win) {
-    const mode = showDevTools === true ? undefined : showDevTools;
-    win.webContents.openDevTools({ mode });
-  }
 }
 
 function refresh(win) {
@@ -41,6 +34,39 @@ function inspectElements() {
 
 const template = [
   {
+    label: 'File',
+    submenu: [
+      {
+        label: 'Select Root Directory',
+        click() {
+          dialog.showOpenDialog(
+            BrowserWindow.getFocusedWindow(),
+            {
+              message: 'Select Root Directory',
+              properties: ['openDirectory'],
+              buttonLabel: 'Select'
+            },
+            dirPaths => {
+              const dirPath = dirPaths && dirPaths[0];
+              if (!dirPath) { return; }
+              setFilesRootPath(dirPath);
+              ipcMain.emit(NEW_ROOT_PATH_SELECTED, dirPath);
+              electronStore.store.set(electronStore.ROOT_PATH, dirPath);
+            }
+          );
+        }
+      },
+      {
+        label: 'Restore Defaults',
+        click() {
+          electronStore.store.deleteAll();
+          app.quit();
+          app.relaunch();
+        }
+      }
+    ]
+  },
+  {
     role: 'window',
     submenu: [
       { role: 'minimize' },
@@ -63,15 +89,6 @@ if (process.platform === 'darwin') {
     label: app.getName(),
     submenu: [
       { role: 'about' },
-      {
-        label: 'Restore Defaults',
-        click() {
-          electronStore.store.deleteAll();
-          app.quit();
-          app.relaunch();
-        }
-      },
-
       { type: 'separator' },
       { role: 'services', submenu: [] },
       { type: 'separator' },

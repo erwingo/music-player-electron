@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { getFilesRootPath } from './_singletons/main';
+import { getFilesRootPath } from '../_singletons/main';
 
 export function getJsonFromFile(filepath: string) {
   return fs.readJsonSync(filepath);
