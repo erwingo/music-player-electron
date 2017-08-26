@@ -23,6 +23,9 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: (mainWindowSize && mainWindowSize.width) || defaults.mainWindowMinWidth,
     height: (mainWindowSize && mainWindowSize.height) || defaults.mainWindowMinHeight,
+    webPreferences: {
+      webSecurity: false
+    }, 
     minWidth: defaults.mainWindowMinWidth,
     minHeight: defaults.mainWindowMinHeight,
     x: (mainWindowPosition && mainWindowPosition.x) || undefined,
