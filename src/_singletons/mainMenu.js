@@ -108,17 +108,17 @@ if (process.env.NODE_ENV !== 'production') {
       {
         label: 'Toggle Dev Tools',
         click() { toggleDevTools(); },
-        accelerator: 'Cmd+Alt+I'
+        accelerator: 'CmdOrCtrl+Alt+I'
       },
       {
         label: 'Reload Page',
         click() { refresh(); },
-        accelerator: 'Cmd+R'
+        accelerator: 'CmdOrCtrl+R'
       },
       {
         label: 'Inspect Element',
         click() { inspectElements(); },
-        accelerator: 'Cmd+Shift+C'
+        accelerator: 'CmdOrCtrl+Shift+C'
       }
     ]
   });
