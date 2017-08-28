@@ -24,6 +24,8 @@
 - prevent app from zooming in
 - playing playlist should scroll when a song starts
 - directory structure should start with main/renderer folders in src
+- src and href should be relative and not absolute.
+  - check index.html, index.bundle.js, index.bundle.css
 
 # TODO
 - menu item to select the directory root of media files

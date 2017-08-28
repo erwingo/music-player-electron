@@ -20,7 +20,7 @@ const output = {
   // https://github.com/webpack/webpack/issues/1114
   libraryTarget: 'commonjs2',
 
-  // The output directory as an absolute path.
+  // The output directory (as an absolute path) where the files will be emitted.
   path: outputPath
 };
 
@@ -46,20 +46,29 @@ if (isProd) {
   // chunkhash is the chunk's checksum, useful for caching purposes
   output.filename = '[name].bundle.[chunkhash].js';
 
-  // Base Absolute path for all the assets required inside the source code.
+  // Prefix path for all the relative-url assets required inside the source code.
   // For example, if you have a .css file that has something like
   // background-image: url('a.png') <<NOTE: no absolute path>> and
-  // your public path is set to http://cdn.example.com, the bundled,
+  // your public path is set to http://cdn.example.com, the bundled
   // file will have background-image: url(http://cdn.example.com/a.png).
   // Also works for file paths
-  output.publicPath = outputPath;
+
+  // TODO: webpack default is '' but i have to explicitely set it to './'
+  // because of a webfonts-loader issue
+  // https://github.com/jeerbl/webfonts-loader/issues/28
+  output.publicPath = './';
 
   rules.push(
     {
       test: /[\\\/]_fonts[\\\/].*[\\\/]font\.js$/,
       use: ExtractTextPlugin.extract({
         fallback: 'style-loader',
-        use: ['css-loader', 'webfonts-loader']
+        use: [
+          // NOTE: We disable the url handling here so that css-loader doesn't
+          // try to search for the font files inside source font dirs
+          { loader: 'css-loader', options: { url: false } },
+          'webfonts-loader'
+        ]
       })
     },
     {
@@ -82,7 +91,11 @@ if (isProd) {
   rules.push(
     {
       test: /[\\\/]_fonts[\\\/].*[\\\/]font\.js$/,
-      use: ['style-loader', 'css-loader', 'webfonts-loader']
+      use: [
+        'style-loader',
+        { loader: 'css-loader', options: { url: false } },
+        'webfonts-loader'
+      ]
     },
     {
       test: /\.s?css$/,
