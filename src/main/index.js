@@ -99,6 +99,26 @@ app.on('ready', () => {
   globalShortcut.register('mediaplaypause', () => {
     mainWindow.webContents.send(constantEvents.MEDIA_PLAY_PAUSE);
   });
+
+  // Devtools
+
+  globalShortcut.register('CommandOrControl+Alt+I', () => {
+    mainWindow.webContents.toggleDevTools();
+  });
+
+  globalShortcut.register('CommandOrControl+Shift+C', () => {
+    mainWindow.webContents.removeAllListeners('devtools-opened');
+    const inspect = () => {
+      mainWindow.devToolsWebContents.executeJavaScript('DevToolsAPI.enterInspectElementMode()');
+    };
+
+    if (!mainWindow.webContents.isDevToolsOpened()) {
+      mainWindow.webContents.on('devtools-opened', inspect);
+      mainWindow.webContents.openDevTools();
+    } else {
+      inspect();
+    }
+  });
 });
 
 // Quit when all windows are closed.
