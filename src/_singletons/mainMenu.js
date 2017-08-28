@@ -26,7 +26,7 @@ function inspectElements() {
     if (win.webContents.isDevToolsOpened()) {
       inspect();
     } else {
-      win.webContents.on('devtools-opened', inspect);
+      win.webContents.once('devtools-opened', inspect);
       win.openDevTools();
     }
   }
