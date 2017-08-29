@@ -81,28 +81,8 @@ const template = [
         click() { shell.openExternal(pkg.homepage); }
       }
     ]
-  }
-];
-
-if (process.platform === 'darwin') {
-  template.unshift({
-    label: app.getName(),
-    submenu: [
-      { role: 'about' },
-      { type: 'separator' },
-      { role: 'services', submenu: [] },
-      { type: 'separator' },
-      { role: 'hide' },
-      { role: 'hideothers' },
-      { role: 'unhide' },
-      { type: 'separator' },
-      { role: 'quit' }
-    ]
-  });
-}
-
-if (process.env.NODE_ENV !== 'production') {
-  template.push({
+  },
+  {
     label: 'Dev Tools',
     submenu: [
       {
@@ -120,6 +100,23 @@ if (process.env.NODE_ENV !== 'production') {
         click() { inspectElements(); },
         accelerator: 'CmdOrCtrl+Shift+C'
       }
+    ]
+  }
+];
+
+if (process.platform === 'darwin') {
+  template.unshift({
+    label: app.getName(),
+    submenu: [
+      { role: 'about' },
+      { type: 'separator' },
+      { role: 'services', submenu: [] },
+      { type: 'separator' },
+      { role: 'hide' },
+      { role: 'hideothers' },
+      { role: 'unhide' },
+      { type: 'separator' },
+      { role: 'quit' }
     ]
   });
 }
