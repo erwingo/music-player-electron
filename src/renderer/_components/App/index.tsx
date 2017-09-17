@@ -2,7 +2,7 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/7896
 // import * as shuffle from 'lodash/fp/shuffle';
 
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import * as _ from 'lodash';
 import * as React from 'react';
 import * as constantEvents from '../../../_constants/events';
@@ -126,7 +126,7 @@ export class App extends React.Component<any, State> {
       const newSongIdx = _.findIndex(queue, el => el.id === this.state.currentSongId) + 1;
 
       if (this.state.isRepeated || newSongIdx < queue.length) {
-        this.playPreviousOrNextSong(true);
+        this.playPreviousOrNextSong(true, true);
       } else {
         // TODO: Go to first song and pause
       }
@@ -278,7 +278,26 @@ export class App extends React.Component<any, State> {
   }
 
   handleItemContextMenu(item: ListItemProps) {
-    console.log(item);
+    const menu = new remote.Menu();
+
+    const playlistSubmenu = new remote.Menu();
+    playlistSubmenu.append(new remote.MenuItem({
+      label: 'New Playlist'
+    }));
+
+    playlistSubmenu.append(new remote.MenuItem({ type: 'separator' }));
+
+    ['Epic', 'Hype', 'LOL'].forEach(el => {
+      playlistSubmenu.append(new remote.MenuItem({ label: el }));
+    });
+
+    const addToPlaylistItem = new remote.MenuItem({
+      label: 'Add To Playlist',
+      submenu: playlistSubmenu
+    });
+
+    menu.append(addToPlaylistItem);
+    menu.popup(remote.getCurrentWindow());
   }
 
   handleMiddleSectionItemDblClick(item: ListItemProps) {
@@ -326,7 +345,7 @@ export class App extends React.Component<any, State> {
   }
 
   // TODO: Way to sort methods by functionality/names
-  playPreviousOrNextSong(isNextSong: boolean) {
+  playPreviousOrNextSong(isNextSong: boolean, shouldPlay = !this.audioCoreEl.isPaused()) {
     const queue = this.state.rightSection.items;
     const currentSongIdx = _.findIndex(queue, el => el.id === this.state.currentSongId);
 
@@ -344,7 +363,7 @@ export class App extends React.Component<any, State> {
       const song = queue[songIdxToPlay];
       showNotification(song.title, song.desc);
     }
-    this.setPlayingPlaylist(queue, { songIdxToPlay, startPlaying: !this.audioCoreEl.isPaused() });
+    this.setPlayingPlaylist(queue, { songIdxToPlay, startPlaying: shouldPlay });
   }
 
   render() {
