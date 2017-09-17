@@ -93,6 +93,7 @@ export class App extends React.Component<any, State> {
   constructor() {
     super();
     this.handleMiddleSectionItemDblClick = this.handleMiddleSectionItemDblClick.bind(this);
+    this.handleItemContextMenu = this.handleItemContextMenu.bind(this);
     this.handleDragCompleted = this.handleDragCompleted.bind(this);
     this.handleVolumeChange = this.handleVolumeChange.bind(this);
     this.handlePlayOrPauseClick = this.handlePlayOrPauseClick.bind(this);
@@ -276,6 +277,10 @@ export class App extends React.Component<any, State> {
     });
   }
 
+  handleItemContextMenu(item: ListItemProps) {
+    console.log(item);
+  }
+
   handleMiddleSectionItemDblClick(item: ListItemProps) {
     const song = _.find(this.state.allSongs, el => el.id === item.id)!;
     const songs = this.state.middleSection.items
@@ -377,6 +382,11 @@ export class App extends React.Component<any, State> {
               id: 'library',
               title: 'Library',
               items: [{ id: 'allsongs', title: 'All Songs' }]
+            },
+            {
+              id: 'playlists',
+              title: 'Playlists',
+              items: []
             }
           ]}
         />
@@ -386,6 +396,7 @@ export class App extends React.Component<any, State> {
           items={this.state.middleSection.items}
           itemSelected={this.state.currentSongId}
           onItemDoubleClick={this.handleMiddleSectionItemDblClick}
+          onItemContextMenu={this.handleItemContextMenu}
         />
         <List
           className='app__rightsection'
@@ -394,6 +405,7 @@ export class App extends React.Component<any, State> {
           rowToScroll={this.state.rightSection.rowToScroll}
           itemSelected={this.state.currentSongId}
           onItemDoubleClick={this.handleRightSectionItemDblClick}
+          onItemContextMenu={this.handleItemContextMenu}
         />
       </div>
     );

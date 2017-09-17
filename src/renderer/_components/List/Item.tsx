@@ -9,22 +9,29 @@ export interface Props {
   imgUrl?: string;
   itemSelected?: string;
   onDoubleClick?: (item: Props) => void;
+  onContextMenu?: (item: Props) => void;
 }
 
 export class ListItem extends React.PureComponent<Props, any> {
   constructor() {
     super();
     this.handleDoubleClick = this.handleDoubleClick.bind(this);
+    this.handleContextMenu = this.handleContextMenu.bind(this);
   }
 
   handleDoubleClick() {
     if (this.props.onDoubleClick) { this.props.onDoubleClick(this.props); }
   }
 
+  handleContextMenu() {
+    if (this.props.onContextMenu) { this.props.onContextMenu(this.props); }
+  }
+
   render() {
     return (
       <div
         onDoubleClick={this.handleDoubleClick}
+        onContextMenu={this.handleContextMenu}
         className={classnames('list__item', {
           'is-selected': this.props.id === this.props.itemSelected
         })}

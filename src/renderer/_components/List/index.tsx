@@ -14,6 +14,7 @@ interface Props {
   items?: ListItemProps[];
   itemSelected?: string;
   onItemDoubleClick?: (item: ListItemProps) => void;
+  onItemContextMenu?: (item: ListItemProps) => void;
   rowToScroll?: number | string;
 }
 
@@ -50,6 +51,7 @@ export class List extends React.PureComponent<Props, any> {
             <ListItem
               key={item.id}
               onDoubleClick={this.props.onItemDoubleClick}
+              onContextMenu={this.props.onItemContextMenu}
               {...item}
               itemSelected={this.props.itemSelected}
             />
