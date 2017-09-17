@@ -50,6 +50,10 @@ export class AudioCore {
     return this.audioEl;
   }
 
+  isPaused() {
+    return this.audioEl.paused;
+  }
+
   setVolume(value: number) {
     this.audioEl.volume = value;
   }

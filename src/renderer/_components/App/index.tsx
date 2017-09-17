@@ -193,6 +193,7 @@ export class App extends React.Component<any, State> {
       shuffle?: boolean,
       songIdxToPlay?: number,
       songIdToPlay?: string,
+      startPlaying?: boolean,
       state?: any
     } = {}
   ) {
@@ -211,25 +212,28 @@ export class App extends React.Component<any, State> {
     if (songToPlay) {
       const filePath = songToPlay.path + '/_file' + songToPlay.fileExtension;
       this.audioCoreEl.setSrc('file:' + getAbsPathFromFilesRootPath(filePath));
-      this.audioCoreEl.play(0);
       currentSongId = songToPlay.id;
       player = {
         title: songToPlay.title,
         subtitle: songToPlay.desc,
         imgUrl: songToPlay.imgUrl
       };
+
+      if (options.startPlaying) {
+        this.audioCoreEl.play(0);
+      }
     }
 
     this.setState({
       ...this.state,
-      isPlaying: !!songToPlay,
       rightSection: {
         rowToScroll: options.songIdToPlay || options.songIdxToPlay,
         items: newSongs
       },
       currentSongId,
       player,
-      ...options.state
+      ...options.state,
+      isPlaying: options.startPlaying
     });
   }
 
@@ -261,6 +265,7 @@ export class App extends React.Component<any, State> {
 
     this.setPlayingPlaylist(items, {
       shuffle: this.state.isShuffled,
+      startPlaying: true,
       songIdxToPlay: 0,
       state: {
         sidebar: {
@@ -278,6 +283,7 @@ export class App extends React.Component<any, State> {
 
     this.setPlayingPlaylist(songs, {
       shuffle: this.state.isShuffled,
+      startPlaying: true,
       songIdToPlay: song.id
     });
   }
@@ -285,6 +291,7 @@ export class App extends React.Component<any, State> {
   handleRightSectionItemDblClick(item: ListItemProps) {
     this.setPlayingPlaylist(this.state.rightSection.items, {
       shuffle: false,
+      startPlaying: true,
       songIdToPlay: item.id
     });
   }
@@ -295,7 +302,7 @@ export class App extends React.Component<any, State> {
 
     this.setPlayingPlaylist(
       newIsShuffle ? this.state.rightSection.items : this.state.middleSection.items,
-      { shuffle: newIsShuffle, state: { isShuffled: newIsShuffle } }
+      { shuffle: newIsShuffle, startPlaying: true, state: { isShuffled: newIsShuffle } }
     );
   }
 
@@ -332,7 +339,7 @@ export class App extends React.Component<any, State> {
       const song = queue[songIdxToPlay];
       showNotification(song.title, song.desc);
     }
-    this.setPlayingPlaylist(queue, { songIdxToPlay });
+    this.setPlayingPlaylist(queue, { songIdxToPlay, startPlaying: !this.audioCoreEl.isPaused() });
   }
 
   render() {
