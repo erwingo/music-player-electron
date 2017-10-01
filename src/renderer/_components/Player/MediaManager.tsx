@@ -2,6 +2,7 @@ import * as classnames from 'classnames';
 import * as React from 'react';
 import { getBgImgUrl } from '../../_helpers';
 import { Slider } from '../Slider';
+import { formatSecondsToTime } from './_helpers';
 
 export interface Props {
   imgUrl?: string;
@@ -14,17 +15,6 @@ export interface Props {
   onRepeatBtnClick?: () => void;
   onShuffleBtnClick?: () => void;
   onDragCompleted?: (value: number) => void;
-}
-
-function convertSecondsToMinutesTime(seconds?: number) {
-  if (typeof seconds === 'undefined' || isNaN(seconds)) {
-    return '-:--';
-  }
-
-  const minutes = Math.floor(seconds / 60);
-  const newSeconds = String(Math.floor(seconds % 60));
-  const pad = '00';
-  return `${minutes}:${(pad + newSeconds).substring(newSeconds.length)}`;
 }
 
 export class MediaManager extends React.PureComponent<Props, any> {
@@ -59,14 +49,14 @@ export class MediaManager extends React.PureComponent<Props, any> {
 
           <div className='player__mediamanager__slider'>
             <div className='player__mediamanager__slider__time1'>
-              {convertSecondsToMinutesTime(
+              {formatSecondsToTime(
                 this.props.currentTime ?
                   this.props.currentTime :
                   this.props.duration ? 0 : undefined
               )}
             </div>
             <div className='player__mediamanager__slider__time2'>
-              {convertSecondsToMinutesTime(this.props.duration)}
+              {formatSecondsToTime(this.props.duration)}
             </div>
 
             <Slider
