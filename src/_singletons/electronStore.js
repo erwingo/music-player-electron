@@ -9,7 +9,8 @@ const fs = require('fs-extra');
 // import * as electron from 'electron';
 // import * as fs from 'fs-extra';
 
-const userDataPath = (electron.app || electron.remote.app).getPath('userData');
+let userDataPath = (electron.app || (electron.remote && electron.remote.app));
+userDataPath = userDataPath && userDataPath.getPath('userData');
 
 // function readJsonInUserDataDirSync(filename: string) {
 function readJsonInUserDataDirSync(filename) {
