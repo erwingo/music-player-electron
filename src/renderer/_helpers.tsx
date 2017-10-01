@@ -2,12 +2,15 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import { getFilesRootPath } from '../_singletons/main';
 
-export function getJsonFromFile(filepath: string) {
-  return fs.readJsonSync(filepath);
+export function getJsonFromFile(filepath: string, fsInj: { readJsonSync: any } = fs) {
+  return fsInj.readJsonSync(filepath);
 }
 
-export function getAbsPathFromFilesRootPath(newPath: string) {
-  return path.join(getFilesRootPath(), newPath);
+export function getAbsPathFromFilesRootPath(
+  newPath: string,
+  getFilesRootPathInj = getFilesRootPath
+) {
+  return path.join(getFilesRootPathInj(), newPath);
 }
 
 export function getBgImgUrl(url?: string) {

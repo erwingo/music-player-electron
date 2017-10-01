@@ -4,10 +4,12 @@
 
 import { ipcRenderer, remote } from 'electron';
 import * as _ from 'lodash';
+import * as path from 'path';
 import * as React from 'react';
 import * as constantEvents from '../../../_constants/events';
 import { defaults } from '../../../_constants/userPreferences';
 import * as electronStore from '../../../_singletons/electronStore';
+import { getFilesRootPath } from '../../../_singletons/main';
 import { isAValidFilesRootPath, setFilesRootPath } from '../../../_singletons/main';
 import { getAbsPathFromFilesRootPath, getJsonFromFile } from '../../_helpers';
 import * as types from '../../_types';

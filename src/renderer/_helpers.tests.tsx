@@ -1,14 +1,17 @@
 import * as assert from 'assert';
-import { getBgImgUrl, getJsonFromFile } from './_helpers';
+import { getAbsPathFromFilesRootPath, getBgImgUrl, getJsonFromFile } from './_helpers';
 
 describe('_helpers', () => {
   describe(`#${(getJsonFromFile as any).name}`, () => {
     it('should return an empty object', () => {
-      const mod = {
-        readJsonSync: (name: string) => name
-      };
+      const inj = { readJsonSync: (name: string) => name };
+      assert.strictEqual(getJsonFromFile('lol', inj), 'lol');
+    });
+  });
 
-      assert.strictEqual(getJsonFromFile('lol', mod), 'lol');
+  describe(`#${(getAbsPathFromFilesRootPath as any).name}`, () => {
+    it('should return /a/b if root is /a and path is b', () => {
+      assert.strictEqual(getAbsPathFromFilesRootPath('b', () => '/a'), '/a/b');
     });
   });
 
