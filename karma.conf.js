@@ -31,6 +31,7 @@ module.exports = config => {
 
     // list of files / patterns to load in the browser
     files: [
+      { pattern: './config/karma.shim.js', watched: true, included: true, served: true },
       // 'src/**/*.tsx',
       'src/**/*.tests.tsx',
       'src/**/_tests.tsx',
@@ -44,29 +45,16 @@ module.exports = config => {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       // 'src/**/*.tsx': ['electron', 'webpack', 'sourcemap', 'coverage'],
-      'src/**/*.tests.tsx': ['electron', 'webpack', 'sourcemap'],
-      'src/**/_tests.tsx': ['electron', 'webpack', 'sourcemap'],
-      'src/**/_tests/**/*.tsx': ['electron', 'webpack', 'sourcemap']
+      'src/**/*.tests.tsx': ['webpack', 'sourcemap'],
+      'src/**/_tests.tsx': ['webpack', 'sourcemap'],
+      'src/**/_tests/**/*.tsx': ['webpack', 'sourcemap']
     },
 
-    // To get node integration privileges like access to module object
-    // https://github.com/twolfson/karma-electron#getting-started
-    client: {
-      useIframe: false
-    },
-
-    // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: ['Electron'],
 
     // Webpack config options
-    webpack: {
-      ...webpackConfig,
-
-      // Somehow karma is not reading the node_modules directory, so we re-include
-      // them here by saying they are not external modules
-      externals: ''
-    },
+    webpack: webpackConfig,
     webpackMiddleware: {
       quiet: true,
       stats: {
@@ -99,7 +87,7 @@ module.exports = config => {
 
     plugins: [
       // Browsers
-      'karma-electron',
+      'karma-electron-launcher',
 
       // Test Frameworks
       'karma-mocha',
