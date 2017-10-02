@@ -113,7 +113,10 @@ module.exports = {
   },
   output,
   devtool: isProd ? 'source-map' : 'inline-source-map',
-  resolve: { extensions: ['.js', '.ts', '.tsx'] },
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx'],
+    modules: [path.resolve(__dirname, '../', 'node_modules')]
+  },
   module: { rules },
   plugins,
 
