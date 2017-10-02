@@ -31,6 +31,7 @@ module.exports = config => {
 
     // list of files / patterns to load in the browser
     files: [
+      // 'src/**/*.tsx',
       'src/**/*.tests.tsx',
       'src/**/_tests.tsx',
       'src/**/_tests/**/*.tsx'
@@ -42,6 +43,7 @@ module.exports = config => {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      // 'src/**/*.tsx': ['electron', 'webpack', 'sourcemap', 'coverage'],
       'src/**/*.tests.tsx': ['electron', 'webpack', 'sourcemap'],
       'src/**/_tests.tsx': ['electron', 'webpack', 'sourcemap'],
       'src/**/_tests/**/*.tsx': ['electron', 'webpack', 'sourcemap']
@@ -77,6 +79,22 @@ module.exports = config => {
         modules: false,
         errors: true
       }
+    },
+
+    // Mocha reporter options
+    mochaReporter: {
+      showDiff: true
+    },
+
+    // Coverage reporter options
+    coverageReporter: {
+      reporters: [
+        { type: 'text-summary' },
+        {
+          type: 'html',
+          dir: 'coverage/'
+        }
+      ]
     },
 
     plugins: [

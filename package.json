@@ -16,7 +16,7 @@
     "package-win": "npm run test && npm run build && electron-packager . --platform=win32 --ignore=$npm_package_config_electronPackagerIgnore --out=products --icon=src/_images/logo.ico --asar",
     "start": "electron .",
     "start-dev": "cross-env NODE_ENV=dev electron .",
-    "test": "mocha -r source-map-support/register --compilers ts-node/register '{src/**/*.tests.tsx,src/**/_tests.tsx,src/**/_tests/**/*.tsx}'",
+    "test": "NODE_ENV=dev karma start",
     "webpack": "webpack --config config/webpack.config",
     "webpack-dev-server": "cross-env NODE_ENV=dev webpack-dev-server --config config/webpack.config"
   },
