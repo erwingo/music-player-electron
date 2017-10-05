@@ -49,10 +49,10 @@ export class List extends React.PureComponent<Props, any> {
         <div className='list__items' ref='listItemsContainer'>
           {items.map(item =>
             <ListItem
+              {...item}
               key={item.id}
               onDoubleClick={this.props.onItemDoubleClick}
               onContextMenu={this.props.onItemContextMenu}
-              {...item}
               itemSelected={this.props.itemSelected}
             />
           )}
