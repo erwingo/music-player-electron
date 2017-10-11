@@ -14,7 +14,7 @@ const getShallowInstance = (newProps?: Partial<Props>) => {
   return { wrapper: shallow(<ListItem {...props} />), props };
 };
 
-describe('Item', () => {
+export function tests() {
   it('should render html', () => {
     const html = (
       <div className='list__item'>
@@ -99,4 +99,4 @@ describe('Item', () => {
     assert(spyFn.calledOnce);
     assert(spyFn.calledWithExactly(shallowInstance.props));
   });
-});
+}

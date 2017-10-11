@@ -17,7 +17,6 @@ interface Props {
 
 export class Player extends React.PureComponent<Props, any> {
   render() {
-
     return (
       <div className={classnames('player', this.props.className)}>
         <Slider
