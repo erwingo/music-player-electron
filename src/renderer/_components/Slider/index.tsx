@@ -10,7 +10,7 @@ const InputRange = require('react-input-range');
 import 'react-input-range/lib/css/index.css';
 import './index.scss';
 
-interface Props {
+export interface Props {
   className?: string;
   minValue?: number;
   maxValue?: number;
